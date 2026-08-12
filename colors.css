@@ -1,0 +1,51 @@
+/* ==========================================================================
+   COLOR TOKENS — SINGLE SOURCE OF TRUTH
+   --------------------------------------------------------------------------
+   Entire palette — ONLY these colors may be used anywhere on the site:
+
+     Background            #0B0B0B   Near Black
+     Secondary Background  #151515   Dark Surface
+     Primary Text          #F5F5F2   Soft White
+     Muted Text            #9A9A9A   Gray
+     Accent / CTA          #8B5CF6   Primary Purple
+     Purple Hover          #A78BFA   Purple Glow / Hover
+
+   Usage rule: keep the page ~90% Background + Text. Orange is the weapon,
+   not the wallpaper — use it only for CTAs, highlights, and the rotating
+   pain phrases. Never put white text on orange; buttons use near-black text
+   (contrast ~6:1).
+   Everything else below is derived from these colors via color-mix.
+   ========================================================================== */
+
+:root {
+  /* --- Base palette ------------------------------------------------------------- */
+  --color-bg:           #0B0B0B;  /* Background */
+  --color-surface:      #151515;  /* Dark Surface */
+  --color-text:         #F5F5F2;  /* Main Text */
+  --color-muted:        #9A9A9A;  /* Muted Text */
+  --color-accent:       #8B5CF6;  /* Primary Purple */
+  --color-accent-hover: #A78BFA;  /* Purple Hover */
+
+  /* --- Semantic roles ------------------------------------------------------------- */
+  --color-accent-2:     var(--color-accent);        /* actions & highlights */
+  --color-hover:        var(--color-accent-hover);  /* hover state for orange fills */
+--color-on-accent:    var(--color-text);      /* text on purple CTAs (white, best contrast ~4.2:1) */
+  --color-bg-soft:      color-mix(in srgb, var(--color-surface) 55%, var(--color-bg));
+
+  /* --- Alpha / derived shades ------------------------------------------------------- */
+  --border:             color-mix(in srgb, var(--color-text) 8%, transparent);
+  --border-soft:        color-mix(in srgb, var(--color-text) 14%, transparent);
+  --border-strong:      color-mix(in srgb, var(--color-text) 22%, transparent);
+  --skeleton:           color-mix(in srgb, var(--color-text) 8%, transparent);
+  --overlay:            color-mix(in srgb, var(--color-bg) 85%, transparent);
+  --dot-chrome:         color-mix(in srgb, var(--color-text) 14%, transparent);
+  --placeholder-text:   color-mix(in srgb, var(--color-muted) 60%, transparent);
+
+  --glow-accent:        color-mix(in srgb, var(--color-accent) 55%, transparent);
+  --glow-accent-2:      color-mix(in srgb, var(--color-accent) 18%, transparent);
+  --halo-hero:          color-mix(in srgb, var(--color-accent) 22%, transparent);
+  --card-shadow:        color-mix(in srgb, var(--color-bg) 92%, transparent);
+
+  /* --- Gradients ---------------------------------------------------------------------- */
+  --gradient-card:      linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg-soft) 100%);
+}
