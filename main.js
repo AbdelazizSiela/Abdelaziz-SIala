@@ -350,3 +350,267 @@ var CAPTIONS = {
 
   probe(1);
 })();
+/* ==========================================================================
+   Social proof marquee.
+   Cards load from images/social proof/proof_1.png ... proof_9.png (fixed set
+   of 9 — drop files in with those names). Titles/descriptions in PROOF_ITEMS.
+
+   The track auto-scrolls forever: the 9 cards are duplicated enough times to
+   cover 2x the viewport, then the offset wraps modulo one set width, so the
+   loop never ends. Dragging adds velocity (flick = momentum that decays back
+   to the base speed). Honours prefers-reduced-motion (no autoscroll).
+   ========================================================================== */
+
+(function () {
+  'use strict';
+
+  var marquee = document.getElementById('social-marquee');
+  var track = document.getElementById('social-marquee-track');
+  if (!marquee || !track) return;
+
+  var COUNT = 5;
+  var IMG_BASE = 'images/social proof/proof_';
+
+  /* One entry per image. Edit titles & descriptions here. */
+  var PROOF_ITEMS = [
+    { title: '25+ Games Built', desc: 'Across a wide range of genres and platforms' },
+    { title: '2 Games Shipped on Steam', desc: 'Put two finished games in front of millions of players on Steam' },
+    { title: 'Game Dev Club Leader', desc: 'Led and taught aspiring game developers through Nexus IT Club at my university' },
+    { title: 'Competed In Many Game Jams', desc: 'Placed 1st and 2nd in two of them' },
+    { title: '130K+ Views Teaching Game Dev', desc: 'One Unity tutorial reached 43K+ views' }
+  ];
+
+  var BASE_SPEED = 40;      // px per second, autoscroll direction: leftwards
+  var FRICTION = 0.94;      // momentum decay per frame (at 60fps)
+  var MAX_COPIES = 12;      // hard cap on duplications
+
+  var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* ---- Build one full set of cards --------------------------------------- */
+  function buildSet() {
+    for (var i = 0; i < COUNT; i++) {
+      var item = PROOF_ITEMS[i] || { title: '', desc: '' };
+
+      var card = document.createElement('figure');
+      card.className = 'proof-card';
+      card.setAttribute('aria-hidden', 'true'); // duplicates are decorative; set is announced once
+
+      var img = document.createElement('img');
+      img.className = 'proof-media';
+      img.src = IMG_BASE + (i + 1) + '.png';
+      img.alt = '';
+      img.draggable = false;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.addEventListener('error', function () {
+        this.classList.add('is-missing'); // placeholder look until user drops real images in
+      });
+
+      var title = document.createElement('figcaption');
+      var strong = document.createElement('span');
+      strong.className = 'proof-title';
+      strong.textContent = item.title;
+      var desc = document.createElement('span');
+      desc.className = 'proof-desc';
+      desc.textContent = item.desc;
+      title.appendChild(strong);
+      title.appendChild(desc);
+
+      card.appendChild(img);
+      card.appendChild(title);
+      track.appendChild(card);
+
+      if (i === 0 && marquee.querySelector('[data-marquee-original]') === null) {
+        // Keep the first set accessible to screen readers
+        card.removeAttribute('aria-hidden');
+        card.setAttribute('data-marquee-original', '');
+        card.setAttribute('role', 'group');
+        card.setAttribute('aria-label', 'Social proof item 1');
+      }
+    }
+  }
+
+  buildSet();
+
+  /* ---- Duplicate until we can loop seamlessly ---------------------------- */
+  function setWidth() {
+    // scrollWidth omits the trailing flex gap; add one back so one "set"
+    // measures exactly COUNT cards + COUNT gaps.
+    var gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
+    return (track.scrollWidth + gap) / copies;
+  }
+
+  var copies = 1;
+  function ensureCopies() {
+    var needed = Math.ceil((marquee.clientWidth * 2) / Math.max(1, track.scrollWidth)) + 1;
+    var target = Math.min(Math.max(needed, 2), MAX_COPIES);
+    while (copies < target) {
+      for (var i = 0; i < COUNT * copies; i++) {
+        track.appendChild(track.children[i].cloneNode(true));
+      }
+      copies *= 2;
+    }
+  }
+
+  ensureCopies();
+  window.addEventListener('resize', ensureCopies);
+
+  /* ---- Animation --------------------------------------------------------- */
+  var offset = 0;       // current translateX (negative = moved left)
+  var velocity = 0;     // extra px/s from dragging/flicking
+  var speedFactor = 1;  // eased 0..1 multiplier — eases to 0 while a card is hovered
+  var hovering = false;
+  var lastTime = null;
+  var rafId = null;
+
+  marquee.addEventListener('pointerover', function (e) {
+    if (e.target.closest && e.target.closest('.proof-card')) {
+      hovering = true;
+      wake();
+    }
+  });
+  marquee.addEventListener('pointerout', function (e) {
+    if (e.target.closest && e.target.closest('.proof-card')) {
+      hovering = false;
+      wake();
+    }
+  });
+
+  function wrapOffset() {
+    var w = setWidth();
+    if (!w || !isFinite(w)) return;
+    while (offset <= -w) offset += w;
+    while (offset > 0) offset -= w;
+  }
+
+  function frame(now) {
+    if (lastTime == null) lastTime = now;
+    var dt = Math.min((now - lastTime) / 1000, 0.05); // clamp tab-switch jumps
+    lastTime = now;
+
+    if (!dragging) {
+      // Ease the base speed toward 0 while hovering a card (smooth stop),
+      // and back to 1 after leaving.
+      var targetFactor = hovering ? 0 : 1;
+      speedFactor += (targetFactor - speedFactor) * Math.min(1, dt * 6);
+      if (!hovering && speedFactor > 0.999) speedFactor = 1;
+      if (hovering && speedFactor < 0.001) speedFactor = 0;
+
+      // drag velocity is negative when moving left, so SUBTRACT it:
+      // a leftward fling speeds the leftward autoscroll up instead of reversing
+      var speed = BASE_SPEED * speedFactor - velocity;
+      offset -= speed * dt;
+      velocity *= Math.pow(FRICTION, dt * 60);
+      if (Math.abs(velocity) < 1) velocity = 0;
+      if (!motion.matches || velocity !== 0) {
+        // reduced motion: only move while there is flick momentum left
+        wrapOffset();
+        track.style.transform = 'translate3d(' + offset.toFixed(2) + 'px,0,0)';
+      }
+      if (motion.matches && velocity === 0) {
+        rafId = null;
+        lastTime = null;
+        return;
+      }
+    }
+
+    rafId = window.requestAnimationFrame(frame);
+  }
+
+  function wake() {
+    if (rafId == null) {
+      lastTime = null;
+      rafId = window.requestAnimationFrame(frame);
+    }
+  }
+
+  /* ---- Drag / flick interaction ------------------------------------------ */
+  /* Uses INCREMENTAL deltas (offset += dx since last move) instead of an
+     absolute drag origin, so modulo wrapping can never desync the gesture. */
+  var dragging = false;
+  var pointerId = null;
+  var lastX = 0;
+  var lastT = 0;
+
+  function endDrag(keepVelocity) {
+    if (!dragging) return;
+    dragging = false;
+    pointerId = null;
+    marquee.classList.remove('is-dragging');
+
+    // Stalled pointer (held still before release) -> no flick momentum
+    if (!keepVelocity || performance.now() - lastT > 80) {
+      velocity = 0;
+    } else {
+      velocity = Math.max(-4000, Math.min(4000, velocity));
+    }
+  }
+
+  marquee.addEventListener('pointerdown', function (e) {
+    dragging = true;
+    pointerId = e.pointerId;
+    lastX = e.clientX;
+    lastT = performance.now();
+    velocity = 0;
+    marquee.classList.add('is-dragging');
+    try { marquee.setPointerCapture(pointerId); } catch (err) { /* noop */ }
+    e.preventDefault();
+    wake();
+  });
+
+  marquee.addEventListener('pointermove', function (e) {
+    if (!dragging || e.pointerId !== pointerId) return;
+    var dx = e.clientX - lastX;
+    lastX = e.clientX;
+
+    var now = performance.now();
+    var dtMs = now - lastT;
+    lastT = now;
+
+    offset += dx;
+    if (dtMs > 0) {
+      // px/s of the most recent movement — becomes flick momentum on release
+      var instantV = (dx / dtMs) * 1000;
+      velocity = velocity * 0.6 + instantV * 0.4;
+    }
+
+    wrapOffset();
+    track.style.transform = 'translate3d(' + offset.toFixed(2) + 'px,0,0)';
+  });
+
+  marquee.addEventListener('pointerup', function (e) {
+    if (e.pointerId !== pointerId) return;
+    endDrag(true);
+    wake();
+  });
+  marquee.addEventListener('pointercancel', function () {
+    endDrag(false);
+    wake();
+  });
+  // Safety net: if the up/cancel event never arrives (released outside the
+  // window, capture lost, etc.) don't stay stuck in dragging mode.
+  marquee.addEventListener('lostpointercapture', function () {
+    endDrag(false);
+    wake();
+  });
+  window.addEventListener('blur', function () {
+    endDrag(false);
+    wake();
+  });
+
+  // Don't let native drag/select fight the gesture
+  track.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  track.addEventListener('selectstart', function (e) { e.preventDefault(); });
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      if (rafId != null) { window.cancelAnimationFrame(rafId); rafId = null; }
+      lastTime = null;
+    } else {
+      wake();
+    }
+  });
+
+  /* ---- Boot ---------------------------------------------------------------- */
+  wake(); // start auto-scrolling immediately
+})();
