@@ -485,6 +485,35 @@ var CAPTIONS = {
     }
   });
 
+  /* ---- Cursor tooltip ("Click me!") --------------------------------------- */
+  var tip = document.createElement('div');
+  tip.className = 'proof-tooltip';
+  tip.textContent = 'Click me!';
+  document.body.appendChild(tip);
+
+  function moveTip(x, y) {
+    var px = x + 14; // offset from the cursor
+    var py = y + 18;
+    var r = tip.getBoundingClientRect();
+    if (px + r.width > window.innerWidth - 8) px = x - r.width - 14;
+    if (py + r.height > window.innerHeight - 8) py = y - r.height - 18;
+    tip.style.left = px + 'px';
+    tip.style.top = py + 'px';
+  }
+  function showTip() { tip.classList.add('is-visible'); }
+  function hideTip() { tip.classList.remove('is-visible'); }
+
+  marquee.addEventListener('pointermove', function (e) {
+    var hit = e.target.closest && e.target.closest('a.proof-link');
+    if (hit && !dragging && e.pointerType === 'mouse') {
+      moveTip(e.clientX, e.clientY);
+      showTip();
+    } else {
+      hideTip();
+    }
+  });
+  marquee.addEventListener('pointerleave', hideTip);
+
   function wrapOffset() {
     var w = setWidth();
     if (!w || !isFinite(w)) return;
@@ -573,6 +602,7 @@ var CAPTIONS = {
     velocity = 0;
     dragDist = 0;
     downLink = e.target.closest && e.target.closest('a.proof-link');
+    hideTip();
     marquee.classList.add('is-dragging');
     try { marquee.setPointerCapture(pointerId); } catch (err) { /* noop */ }
     e.preventDefault();

@@ -575,6 +575,38 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
 }
 
+/* Caption is invisible to the cursor: hover/pause/tooltip only trigger
+   when actually over the image itself */
+.proof-link figcaption {
+  pointer-events: none;
+}
+
+/* "Click me!" tooltip that follows the cursor over proof cards */
+.proof-tooltip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: .32rem .75rem;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  white-space: nowrap;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--glow-accent);
+  border-radius: 999px;
+  box-shadow: 0 6px 20px -8px var(--card-shadow);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px) scale(.92);
+  transition: opacity .2s ease, transform .2s ease;
+}
+.proof-tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
 .proof-media {
   position: relative;
   display: block;
