@@ -371,13 +371,14 @@ var CAPTIONS = {
   var COUNT = 5;
   var IMG_BASE = 'images/social proof/proof_';
 
-  /* One entry per image. Edit titles & descriptions here. */
+  /* One entry per image. Edit titles, descriptions & links here.
+     `link` is where the card navigates when clicked (opens in a new tab). */
   var PROOF_ITEMS = [
-    { title: '25+ Games Built', desc: 'Across a wide range of genres and platforms' },
-    { title: '2 Games Shipped on Steam', desc: 'Put two finished games in front of millions of players on Steam' },
-    { title: 'Game Dev Club Leader', desc: 'Led and taught aspiring game developers through Nexus IT Club at my university' },
-    { title: 'Competed In Many Game Jams', desc: 'Placed 1st and 2nd in two of them' },
-    { title: '130K+ Views Teaching Game Dev', desc: 'One Unity tutorial reached 43K+ views' }
+    { title: '25+ Games Built', desc: 'Across a wide range of genres and platforms', link: 'https://sites.google.com/view/abdelazizsiala' },
+    { title: '2 Games Shipped on Steam', desc: 'Put two finished games in front of millions of players on Steam', link: 'https://store.steampowered.com/developer/suronix/' },
+    { title: 'Game Dev Club Leader', desc: 'Led and taught aspiring game developers through Nexus IT Club at my university', link: 'https://www.instagram.com/p/DWpIU0KCGb3/' },
+    { title: 'Competed In Many Game Jams', desc: 'Placed 1st and 2nd in two of them', link: 'https://www.facebook.com/photo?fbid=122127498578256971&set=pcb.122127499154256971' },
+    { title: '130K+ Views Teaching Game Dev', desc: 'One Unity tutorial reached 43K+ views', link: 'https://www.youtube.com/@canwithcode/videos' }
   ];
 
   var BASE_SPEED = 40;      // px per second, autoscroll direction: leftwards
@@ -394,6 +395,13 @@ var CAPTIONS = {
       var card = document.createElement('figure');
       card.className = 'proof-card';
       card.setAttribute('aria-hidden', 'true'); // duplicates are decorative; set is announced once
+
+      // Whole card is a link — opens item.link in a new tab
+      var link = document.createElement('a');
+      link.className = 'proof-link';
+      link.href = item.link || '#';
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
 
       var img = document.createElement('img');
       img.className = 'proof-media';
@@ -416,8 +424,9 @@ var CAPTIONS = {
       title.appendChild(strong);
       title.appendChild(desc);
 
-      card.appendChild(img);
-      card.appendChild(title);
+      link.appendChild(img);
+      link.appendChild(title);
+      card.appendChild(link);
       track.appendChild(card);
 
       if (i === 0 && marquee.querySelector('[data-marquee-original]') === null) {
@@ -531,6 +540,16 @@ var CAPTIONS = {
   var pointerId = null;
   var lastX = 0;
   var lastT = 0;
+  var dragDist = 0; // total px moved this gesture — used to cancel link clicks
+  var downLink = null; // link under the pointer when the gesture started
+
+  // A drag shouldn't navigate: cancel clicks that follow a real drag movement
+  track.addEventListener('click', function (e) {
+    if (dragDist > 8) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
 
   function endDrag(keepVelocity) {
     if (!dragging) return;
@@ -552,6 +571,8 @@ var CAPTIONS = {
     lastX = e.clientX;
     lastT = performance.now();
     velocity = 0;
+    dragDist = 0;
+    downLink = e.target.closest && e.target.closest('a.proof-link');
     marquee.classList.add('is-dragging');
     try { marquee.setPointerCapture(pointerId); } catch (err) { /* noop */ }
     e.preventDefault();
@@ -562,6 +583,7 @@ var CAPTIONS = {
     if (!dragging || e.pointerId !== pointerId) return;
     var dx = e.clientX - lastX;
     lastX = e.clientX;
+    dragDist += Math.abs(dx);
 
     var now = performance.now();
     var dtMs = now - lastT;
@@ -581,10 +603,20 @@ var CAPTIONS = {
   marquee.addEventListener('pointerup', function (e) {
     if (e.pointerId !== pointerId) return;
     endDrag(true);
+    // Pointer capture retargets the native click to the marquee, so the
+    // anchor never sees it — navigate manually for a clean click.
+    if (dragDist <= 8 && downLink) {
+      var href = downLink.getAttribute('href');
+      if (href && href !== '#') {
+        window.open(href, '_blank', 'noopener');
+      }
+    }
+    downLink = null;
     wake();
   });
   marquee.addEventListener('pointercancel', function () {
     endDrag(false);
+    downLink = null;
     wake();
   });
   // Safety net: if the up/cancel event never arrives (released outside the
