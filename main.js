@@ -790,22 +790,30 @@ var testimonialLightbox = (function () {
     });
   }
 
-  function appendImage(src) {
-    var img = document.createElement('img');
-    img.className = 't-lightbox-media';
-    img.src = src;
-    img.alt = '';
-    img.draggable = false;
-    body.appendChild(img);
-  }
-
   function fill(item) {
     body.innerHTML = '';
 
-    // Review screenshot (separate from the marquee thumbnail)
-    if (item.detail) appendImage(item.detail);
+    // Left column: review screenshot + "View Original Review", centered as a group
+    var left = document.createElement('div');
+    left.className = 't-lightbox-left';
+    if (item.detail) {
+      var img = document.createElement('img');
+      img.className = 't-lightbox-media';
+      img.src = item.detail;
+      img.alt = '';
+      img.draggable = false;
+      left.appendChild(img);
+    }
+    var hasLink = item.link && item.link !== '#';
+    cta.classList.toggle('is-hidden', !hasLink);
+    if (hasLink) {
+      cta.href = item.link;
+      cta.textContent = 'View Original Review';
+    }
+    left.appendChild(cta);
+    body.appendChild(left);
 
-    // Project proof: video if provided, otherwise a showcase image
+    // Right column: project proof — video if provided, otherwise a showcase image
     if (item.video) {
       var vid = document.createElement('video');
       vid.className = 't-lightbox-video';
@@ -815,7 +823,12 @@ var testimonialLightbox = (function () {
       vid.preload = 'metadata';
       body.appendChild(vid);
     } else if (item.showcase) {
-      appendImage(item.showcase);
+      var shot = document.createElement('img');
+      shot.className = 't-lightbox-media';
+      shot.src = item.showcase;
+      shot.alt = '';
+      shot.draggable = false;
+      body.appendChild(shot);
     }
 
     if (item.desc) {
@@ -823,13 +836,6 @@ var testimonialLightbox = (function () {
       cap.className = 't-lightbox-caption';
       cap.textContent = item.desc;
       body.appendChild(cap);
-    }
-
-    var hasLink = item.link && item.link !== '#';
-    cta.classList.toggle('is-hidden', !hasLink);
-    if (hasLink) {
-      cta.href = item.link;
-      cta.textContent = 'View Original Review';
     }
   }
 
@@ -922,7 +928,7 @@ var TESTIMONIAL_ITEMS = [
     detail: 'images/testimonials/detail_1.png',
     showcase: 'images/testimonials/showcase_1.png',
      video: 'videos/review_1.mp4',
-    link: '#' },
+    link: 'http://www.fiverr.com/abdelazizsiela' },
   { img: 'images/testimonials/testimonial_2.png',
     desc: 'Name — Role / Project',
     detail: 'images/testimonials/detail_2.png',
