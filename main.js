@@ -705,6 +705,9 @@ initMarquee({
     { title: '"Placeholder Quote 2"', desc: 'Name — Role / Project', link: '#' },
     { title: '"Placeholder Quote 3"', desc: 'Name — Role / Project', link: '#' },
     { title: '"Placeholder Quote 4"', desc: 'Name — Role / Project', link: '#' },
-    { title: '"Placeholder Quote 5"', desc: 'Name — Role / Project', link: '#' }
+    { title: '"Placeholder Quote 5"', desc: 'Name — Role / Project', link: '#' },
+    { title: '"Placeholder Quote 6"', desc: 'Name — Role / Project', link: '#' },
+    { title: '"Placeholder Quote 7"', desc: 'Name — Role / Project', link: '#' },
+    { title: '"Placeholder Quote 8"', desc: 'Name — Role / Project', link: '#' }
   ]
 });
