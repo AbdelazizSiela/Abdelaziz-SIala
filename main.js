@@ -351,35 +351,29 @@ var CAPTIONS = {
   probe(1);
 })();
 /* ==========================================================================
-   Social proof marquee.
-   Cards load from images/social proof/proof_1.png ... proof_9.png (fixed set
-   of 9 — drop files in with those names). Titles/descriptions in PROOF_ITEMS.
+   Marquee factory — powers any auto-scrolling card strip.
+   Cards load from imgBase + n + '.png' (drop files in with sequential names).
+   Items (title/description/link) are passed in via config below.
 
-   The track auto-scrolls forever: the 9 cards are duplicated enough times to
-   cover 2x the viewport, then the offset wraps modulo one set width, so the
-   loop never ends. Dragging adds velocity (flick = momentum that decays back
-   to the base speed). Honours prefers-reduced-motion (no autoscroll).
+   The track auto-scrolls forever: cards are duplicated enough times to cover
+   2x the viewport, then the offset wraps modulo one set width, so the loop
+   never ends. Dragging adds velocity (flick = momentum that decays back to
+   the base speed). Honours prefers-reduced-motion (no autoscroll).
    ========================================================================== */
 
-(function () {
+function initMarquee(config) {
   'use strict';
 
-  var marquee = document.getElementById('social-marquee');
-  var track = document.getElementById('social-marquee-track');
+  var marquee = document.getElementById(config.marqueeId);
+  var track = document.getElementById(config.trackId);
   if (!marquee || !track) return;
 
-  var COUNT = 5;
-  var IMG_BASE = 'images/social proof/proof_';
+  var COUNT = config.items.length;
+  var IMG_BASE = config.imgBase;
 
   /* One entry per image. Edit titles, descriptions & links here.
      `link` is where the card navigates when clicked (opens in a new tab). */
-  var PROOF_ITEMS = [
-    { title: '25+ Games Built', desc: 'Across a wide range of genres and platforms', link: 'https://sites.google.com/view/abdelazizsiala' },
-    { title: '2 Games Shipped on Steam', desc: 'Put two finished games in front of millions of players on Steam', link: 'https://store.steampowered.com/developer/suronix/' },
-    { title: 'Game Dev Club Leader', desc: 'Led and taught aspiring game developers through Nexus IT Club at my university', link: 'https://www.instagram.com/p/DWpIU0KCGb3/' },
-    { title: 'Competed In Many Game Jams', desc: 'Placed 1st and 2nd in two of them', link: 'https://www.facebook.com/photo?fbid=122127498578256971&set=pcb.122127499154256971' },
-    { title: '130K+ Views Teaching Game Dev', desc: 'One Unity tutorial reached 43K+ views', link: 'https://www.youtube.com/@canwithcode/videos' }
-  ];
+  var PROOF_ITEMS = config.items;
 
   var BASE_SPEED = 40;      // px per second, autoscroll direction: leftwards
   var FRICTION = 0.94;      // momentum decay per frame (at 60fps)
@@ -434,7 +428,7 @@ var CAPTIONS = {
         card.removeAttribute('aria-hidden');
         card.setAttribute('data-marquee-original', '');
         card.setAttribute('role', 'group');
-        card.setAttribute('aria-label', 'Social proof item 1');
+        card.setAttribute('aria-label', 'Item 1');
       }
     }
   }
@@ -473,14 +467,20 @@ var CAPTIONS = {
   var rafId = null;
 
   marquee.addEventListener('pointerover', function (e) {
-    if (e.target.closest && e.target.closest('.proof-card')) {
+    var media = e.target.closest && e.target.closest('.proof-media');
+    if (media) {
       hovering = true;
+      var card = media.closest('.proof-card');
+      if (card) card.classList.add('is-hover');
       wake();
     }
   });
   marquee.addEventListener('pointerout', function (e) {
-    if (e.target.closest && e.target.closest('.proof-card')) {
+    var media = e.target.closest && e.target.closest('.proof-media');
+    if (media) {
       hovering = false;
+      var card = media.closest('.proof-card');
+      if (card) card.classList.remove('is-hover');
       wake();
     }
   });
@@ -488,7 +488,7 @@ var CAPTIONS = {
   /* ---- Cursor tooltip ("Click me!") --------------------------------------- */
   var tip = document.createElement('div');
   tip.className = 'proof-tooltip';
-  tip.textContent = 'Click me!';
+  tip.textContent = config.tooltip || 'Click me!';
   document.body.appendChild(tip);
 
   function moveTip(x, y) {
@@ -503,16 +503,18 @@ var CAPTIONS = {
   function showTip() { tip.classList.add('is-visible'); }
   function hideTip() { tip.classList.remove('is-visible'); }
 
-  marquee.addEventListener('pointermove', function (e) {
-    var hit = e.target.closest && e.target.closest('a.proof-link');
-    if (hit && !dragging && e.pointerType === 'mouse') {
-      moveTip(e.clientX, e.clientY);
-      showTip();
-    } else {
-      hideTip();
-    }
+  // Position is tracked on the window so the tip keeps following the cursor
+  // even while fading out or between cards. Visibility is just a class toggle,
+  // so re-entering an image mid-fade resumes from the current opacity instead
+  // of restarting the animation.
+  window.addEventListener('pointermove', function (e) {
+    moveTip(e.clientX, e.clientY);
+    var hit = !dragging && e.pointerType === 'mouse' &&
+      e.target.closest && e.target.closest('.proof-media');
+    if (hit) showTip(); else hideTip();
   });
-  marquee.addEventListener('pointerleave', hideTip);
+  document.addEventListener('pointerleave', hideTip);
+  window.addEventListener('blur', hideTip);
 
   function wrapOffset() {
     var w = setWidth();
@@ -675,4 +677,34 @@ var CAPTIONS = {
 
   /* ---- Boot ---------------------------------------------------------------- */
   wake(); // start auto-scrolling immediately
-})();
+}
+
+/* ---- Social proof: "I've Actually Done This" ------------------------------ */
+initMarquee({
+  marqueeId: 'social-marquee',
+  trackId: 'social-marquee-track',
+  imgBase: 'images/social proof/proof_',
+  tooltip: 'Click me!',
+  items: [
+    { title: '25+ Games Built', desc: 'Across a wide range of genres and platforms', link: 'https://sites.google.com/view/abdelazizsiala' },
+    { title: '2 Games Shipped on Steam', desc: 'Put two finished games in front of millions of players on Steam', link: 'https://store.steampowered.com/developer/suronix/' },
+    { title: 'Game Dev Club Leader', desc: 'Led and taught aspiring game developers through Nexus IT Club at my university', link: 'https://www.instagram.com/p/DWpIU0KCGb3/' },
+    { title: 'Competed In Many Game Jams', desc: 'Placed 1st and 2nd in two of them', link: 'https://www.facebook.com/photo?fbid=122127498578256971&set=pcb.122127499154256971' },
+    { title: '130K+ Views Teaching Game Dev', desc: 'One Unity tutorial reached 43K+ views', link: 'https://www.youtube.com/@canwithcode/videos' }
+  ]
+});
+
+/* ---- Testimonials: "What People Say About Working With Me" ---------------- */
+initMarquee({
+  marqueeId: 'testimonials-marquee',
+  trackId: 'testimonials-marquee-track',
+  imgBase: 'images/testimonials/testimonial_',
+  tooltip: 'Click me!',
+  items: [
+    { title: '"Placeholder Quote 1"', desc: 'Name — Role / Project', link: '#' },
+    { title: '"Placeholder Quote 2"', desc: 'Name — Role / Project', link: '#' },
+    { title: '"Placeholder Quote 3"', desc: 'Name — Role / Project', link: '#' },
+    { title: '"Placeholder Quote 4"', desc: 'Name — Role / Project', link: '#' },
+    { title: '"Placeholder Quote 5"', desc: 'Name — Role / Project', link: '#' }
+  ]
+});
