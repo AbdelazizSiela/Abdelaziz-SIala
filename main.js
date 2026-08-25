@@ -394,16 +394,21 @@ function initMarquee(config) {
       card.className = 'proof-card';
       card.setAttribute('aria-hidden', 'true'); // duplicates are decorative; set is announced once
 
-      // Whole card is a link — opens item.link in a new tab
+      // Whole card is a link. In popup mode (_item + config.onCardActivate)
+      // clicking opens the case-study popup instead of navigating.
       var link = document.createElement('a');
       link.className = 'proof-link';
       link.href = item.link || '#';
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
+      // Index into config.items — data attributes survive cloneNode(true),
+      // JS expando properties don't (duplicated cards are clones).
+      link.setAttribute('data-item-index', String(i));
 
       var img = document.createElement('img');
       img.className = 'proof-media';
-      img.src = IMG_BASE + (IMG_START + i) + '.png';
+      // Items may pin an exact image; otherwise number sequentially from IMG_START
+      img.src = item.img || (IMG_BASE + (IMG_START + i) + '.png');
       img.alt = '';
       img.draggable = false;
       img.loading = 'lazy';
@@ -442,13 +447,27 @@ function initMarquee(config) {
 
   /* ---- Duplicate until we can loop seamlessly ---------------------------- */
   function setWidth() {
-    // scrollWidth/scrollHeight omits the trailing flex gap; add one back so one
-    // "set" measures exactly COUNT cards + COUNT gaps.
-    var gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
-    if (AXIS === 'y') {
-      return (track.scrollHeight + gap) / copies;
+    // The exact repeat period is the distance between a card and the same
+    // card one full set later — measured from the DOM, so gaps, margins and
+    // hidden (display:none) split-mode cards can never skew it.
+    // (offsetTop/offsetLeft are relative to whatever offsetParent, but the
+    // difference between two siblings cancels that out.)
+    var kids = track.children;
+    var a = null, aIdx = -1, i;
+    for (i = 0; i < kids.length && i < COUNT; i++) {
+      if (kids[i].offsetWidth > 0 || kids[i].offsetHeight > 0) { a = kids[i]; aIdx = i; break; }
     }
-    return (track.scrollWidth + gap) / copies;
+    if (!a || aIdx + COUNT >= kids.length) return 0;
+    var b = kids[aIdx + COUNT];
+    var w = AXIS === 'y' ? (b.offsetTop - a.offsetTop) : (b.offsetLeft - a.offsetLeft);
+    return w > 0 ? w : 0;
+  }
+
+  function wrapOffset() {
+    var w = setWidth();
+    if (!w || !isFinite(w)) return;
+    while (offset <= -w) offset += w;
+    while (offset > 0) offset -= w;
   }
 
   var copies = 1;
@@ -466,6 +485,8 @@ function initMarquee(config) {
 
   ensureCopies();
   window.addEventListener('resize', ensureCopies);
+  window.addEventListener('load', ensureCopies); // re-measure after images/fonts settle
+  setTimeout(ensureCopies, 400); // safety net for late layout shifts
 
   /* ---- Animation --------------------------------------------------------- */
   var offset = 0;       // current translateX (negative = moved left)
@@ -524,13 +545,6 @@ function initMarquee(config) {
   });
   document.addEventListener('pointerleave', hideTip);
   window.addEventListener('blur', hideTip);
-
-  function wrapOffset() {
-    var w = setWidth();
-    if (!w || !isFinite(w)) return;
-    while (offset <= -w) offset += w;
-    while (offset > 0) offset -= w;
-  }
 
   function frame(now) {
     if (lastTime == null) lastTime = now;
@@ -657,9 +671,19 @@ function initMarquee(config) {
     // Pointer capture retargets the native click to the marquee, so the
     // anchor never sees it — navigate manually for a clean click.
     if (dragDist <= 8 && downLink) {
-      var href = downLink.getAttribute('href');
-      if (href && href !== '#') {
-        window.open(href, '_blank', 'noopener');
+      var itemIdx = parseInt(downLink.getAttribute('data-item-index'), 10);
+      var linkedItem = config.items[itemIdx];
+      if (config.onCardActivate && linkedItem) {
+        // Popup mode: open the card's popup, using the image as the animation origin
+        var media = downLink.querySelector('.proof-media');
+        config.onCardActivate(linkedItem, media || downLink);
+      } else {
+        // Pointer capture retargets the native click to the marquee, so the
+        // anchor never sees it — navigate manually for a clean click.
+        var href = downLink.getAttribute('href');
+        if (href && href !== '#') {
+          window.open(href, '_blank', 'noopener');
+        }
       }
     }
     downLink = null;
@@ -713,17 +737,227 @@ initMarquee({
   ]
 });
 
+/* ---- Testimonial case-study popup ---------------------------------------- */
+/* Clicking a testimonial image opens this popup. It scales up out of the
+   clicked image (FLIP animation), blurs the page behind it, and shows a
+   detail image + a video (or showcase image) + "View Original Review". */
+var testimonialLightbox = (function () {
+  'use strict';
+
+  var root = null, panel = null, body = null, cta = null;
+  var sourceEl = null; // thumbnail the popup grows out of / shrinks back into
+
+  function ensureDom() {
+    if (root) return;
+
+    root = document.createElement('div');
+    root.className = 't-lightbox';
+    root.hidden = true;
+
+    var backdrop = document.createElement('div');
+    backdrop.className = 't-lightbox-backdrop';
+
+    panel = document.createElement('figure');
+    panel.className = 't-lightbox-panel';
+
+    var closeBtn = document.createElement('button');
+    closeBtn.className = 't-lightbox-close';
+    closeBtn.type = 'button';
+    closeBtn.setAttribute('aria-label', 'Close');
+    closeBtn.innerHTML = '&times;';
+    closeBtn.addEventListener('click', function () { close(); });
+
+    body = document.createElement('div');
+    body.className = 't-lightbox-scroll';
+
+    cta = document.createElement('a');
+    cta.className = 'btn t-lightbox-cta';
+    cta.target = '_blank';
+    cta.rel = 'noopener noreferrer';
+
+    panel.appendChild(closeBtn);
+    panel.appendChild(body);
+    panel.appendChild(cta);
+    root.appendChild(backdrop);
+    root.appendChild(panel);
+    document.body.appendChild(root);
+
+    backdrop.addEventListener('pointerdown', function (e) {
+      if (e.target === backdrop) close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !root.hidden) close();
+    });
+  }
+
+  function appendImage(src) {
+    var img = document.createElement('img');
+    img.className = 't-lightbox-media';
+    img.src = src;
+    img.alt = '';
+    img.draggable = false;
+    body.appendChild(img);
+  }
+
+  function fill(item) {
+    body.innerHTML = '';
+
+    // Review screenshot (separate from the marquee thumbnail)
+    if (item.detail) appendImage(item.detail);
+
+    // Project proof: video if provided, otherwise a showcase image
+    if (item.video) {
+      var vid = document.createElement('video');
+      vid.className = 't-lightbox-video';
+      vid.src = item.video;
+      vid.controls = true;
+      vid.playsInline = true;
+      vid.preload = 'metadata';
+      body.appendChild(vid);
+    } else if (item.showcase) {
+      appendImage(item.showcase);
+    }
+
+    if (item.desc) {
+      var cap = document.createElement('p');
+      cap.className = 't-lightbox-caption';
+      cap.textContent = item.desc;
+      body.appendChild(cap);
+    }
+
+    var hasLink = item.link && item.link !== '#';
+    cta.classList.toggle('is-hidden', !hasLink);
+    if (hasLink) {
+      cta.href = item.link;
+      cta.textContent = 'View Original Review';
+    }
+  }
+
+  function open(item, srcEl) {
+    ensureDom();
+    fill(item);
+    sourceEl = srcEl || null;
+
+    root.hidden = false;
+
+    // FLIP: measure the popup at its final size, then start it transformed
+    // to match the clicked thumbnail and let the transition settle it back.
+    panel.style.transform = 'none';
+    var pr = panel.getBoundingClientRect();
+    var from = sourceEl ? sourceEl.getBoundingClientRect() : null;
+    if (from && pr.width > 0) {
+      var sx = from.width / pr.width;
+      var sy = from.height / pr.height;
+      var dx = (from.left + from.width / 2) - (pr.left + pr.width / 2);
+      var dy = (from.top + from.height / 2) - (pr.top + pr.height / 2);
+      panel.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) scale(' + sx.toFixed(3) + ',' + sy.toFixed(3) + ')';
+    } else {
+      panel.style.transform = 'scale(.85)';
+    }
+    void panel.offsetWidth; // flush styles so the transition actually runs
+
+    requestAnimationFrame(function () {
+      root.classList.add('is-open');     // fades/blurs the backdrop in
+      panel.style.transform = '';        // springs to final position
+    });
+  }
+
+  function close() {
+    if (!root || root.hidden) return;
+
+    var vid = body.querySelector('video');
+    if (vid) vid.pause();
+
+    root.classList.remove('is-open');
+
+    // Shrink back toward wherever the thumbnail is now (the marquee kept scrolling)
+    var to = sourceEl && document.body.contains(sourceEl) ? sourceEl.getBoundingClientRect() : null;
+    if (to) {
+      var pr = panel.getBoundingClientRect();
+      var sx = Math.max(to.width / pr.width, 0.02);
+      var sy = Math.max(to.height / pr.height, 0.02);
+      var dx = (to.left + to.width / 2) - (pr.left + pr.width / 2);
+      var dy = (to.top + to.height / 2) - (pr.top + pr.height / 2);
+      panel.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) scale(' + sx.toFixed(3) + ',' + sy.toFixed(3) + ')';
+    } else {
+      panel.style.transform = 'scale(.85)';
+    }
+
+    var finished = false;
+    function done() {
+      if (finished) return;
+      finished = true;
+      root.hidden = true;
+      panel.style.transform = '';
+      body.innerHTML = '';
+      sourceEl = null;
+    }
+    var timer = setTimeout(done, 480); // fallback if transitionend never fires
+    panel.addEventListener('transitionend', function handler(e) {
+      if (e.target !== panel) return;
+      clearTimeout(timer);
+      panel.removeEventListener('transitionend', handler);
+      done();
+    });
+  }
+
+  return { open: open, close: close };
+})();
+
 /* ---- Testimonials: "What People Say About Working With Me" ---------------- */
-/* Two vertical columns side by side — left scrolls up, right scrolls down. */
+/* Two vertical columns side by side — left scrolls up, right scrolls down.
+   BOTH columns receive the full item list; on wide screens CSS shows items
+   1–4 in the left column and 5–8 in the right. On narrow screens the grid
+   collapses to one column showing everything (see styles.css).
+
+   Per item:
+     img      — thumbnail in the marquee (testimonial_N.png)
+     detail   — review screenshot shown in the popup (separate file)
+     showcase — project image shown in the popup (used when there's no video)
+     video    — optional; replaces the showcase image with an embedded player
+     link     — where "View Original Review" goes                                */
 var TESTIMONIAL_ITEMS = [
-  { title: '"Placeholder Quote 1"', desc: 'Name — Role / Project', link: '#' },
-  { title: '"Placeholder Quote 2"', desc: 'Name — Role / Project', link: '#' },
-  { title: '"Placeholder Quote 3"', desc: 'Name — Role / Project', link: '#' },
-  { title: '"Placeholder Quote 4"', desc: 'Name — Role / Project', link: '#' },
-  { title: '"Placeholder Quote 5"', desc: 'Name — Role / Project', link: '#' },
-  { title: '"Placeholder Quote 6"', desc: 'Name — Role / Project', link: '#' },
-  { title: '"Placeholder Quote 7"', desc: 'Name — Role / Project', link: '#' },
-  { title: '"Placeholder Quote 8"', desc: 'Name — Role / Project', link: '#' }
+  { img: 'images/testimonials/testimonial_1.png',
+    desc: 'Name — Role / Project',
+    detail: 'images/testimonials/detail_1.png',
+    showcase: 'images/testimonials/showcase_1.png',
+     video: 'videos/review_1.mp4',
+    link: '#' },
+  { img: 'images/testimonials/testimonial_2.png',
+    desc: 'Name — Role / Project',
+    detail: 'images/testimonials/detail_2.png',
+    showcase: 'images/testimonials/showcase_2.png',
+    link: '#' },
+  { img: 'images/testimonials/testimonial_3.png',
+    desc: 'Name — Role / Project',
+    detail: 'images/testimonials/detail_3.png',
+    showcase: 'images/testimonials/showcase_3.png',
+    link: '#' },
+  { img: 'images/testimonials/testimonial_4.png',
+    desc: 'Name — Role / Project',
+    detail: 'images/testimonials/detail_4.png',
+    showcase: 'images/testimonials/showcase_4.png',
+    link: '#' },
+  { img: 'images/testimonials/testimonial_5.png',
+    desc: 'Name — Role / Project',
+    detail: 'images/testimonials/detail_5.png',
+    showcase: 'images/testimonials/showcase_5.png',
+    link: '#' },
+  { img: 'images/testimonials/testimonial_6.png',
+    desc: 'Name — Role / Project',
+    detail: 'images/testimonials/detail_6.png',
+    showcase: 'images/testimonials/showcase_6.png',
+    link: '#' },
+  { img: 'images/testimonials/testimonial_7.png',
+    desc: 'Name — Role / Project',
+    detail: 'images/testimonials/detail_7.png',
+    showcase: 'images/testimonials/showcase_7.png',
+    link: '#' },
+  { img: 'images/testimonials/testimonial_8.png',
+    desc: 'Name — Role / Project',
+    detail: 'images/testimonials/detail_8.png',
+    showcase: 'images/testimonials/showcase_8.png',
+    link: '#' }
 ];
 
 initMarquee({
@@ -733,7 +967,8 @@ initMarquee({
   tooltip: 'Click me!',
   axis: 'y',
   showText: false, // image-only cards
-  items: TESTIMONIAL_ITEMS.slice(0, Math.ceil(TESTIMONIAL_ITEMS.length / 2))
+  onCardActivate: function (item, sourceEl) { testimonialLightbox.open(item, sourceEl); },
+  items: TESTIMONIAL_ITEMS
 });
 
 initMarquee({
@@ -744,6 +979,6 @@ initMarquee({
   axis: 'y',
   reverse: true,
   showText: false, // image-only cards
-  imgStart: Math.ceil(TESTIMONIAL_ITEMS.length / 2) + 1, // testimonial_5.png onwards
-  items: TESTIMONIAL_ITEMS.slice(Math.ceil(TESTIMONIAL_ITEMS.length / 2))
+  onCardActivate: function (item, sourceEl) { testimonialLightbox.open(item, sourceEl); },
+  items: TESTIMONIAL_ITEMS
 });

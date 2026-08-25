@@ -567,6 +567,134 @@ a { color: inherit; text-decoration: none; }
   width: min(100%, 380px);
 }
 
+/* Wide screens: both tracks hold all cards — show half per column
+   (left scrolls up through items 1–4, right scrolls down through 5–8).
+   Pattern repeats every 8 children so every cloned copy is split too. */
+@media (min-width: 721px) {
+  #testimonials-marquee-a .proof-card:nth-child(8n+5),
+  #testimonials-marquee-a .proof-card:nth-child(8n+6),
+  #testimonials-marquee-a .proof-card:nth-child(8n+7),
+  #testimonials-marquee-a .proof-card:nth-child(8n+8) { display: none; }
+  #testimonials-marquee-b .proof-card:nth-child(8n+1),
+  #testimonials-marquee-b .proof-card:nth-child(8n+2),
+  #testimonials-marquee-b .proof-card:nth-child(8n+3),
+  #testimonials-marquee-b .proof-card:nth-child(8n+4) { display: none; }
+}
+
+/* Narrow screens: merge into one full-width bar with all testimonials */
+@media (max-width: 720px) {
+  .v-marquee-grid { grid-template-columns: minmax(0, 1fr); }
+  #testimonials-marquee-b { display: none; }
+  .marquee-v .proof-card { width: min(100%, 340px); }
+}
+
+/* ==========================================================================
+    Testimonial case-study popup
+    Opens from the clicked image (FLIP scale), blurs the page behind it.
+    ========================================================================== */
+body.t-modal-open { overflow: hidden; }
+
+.t-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 2.5rem);
+}
+.t-lightbox[hidden] { display: none; }
+
+/* Dimmed + blurred page behind the popup */
+.t-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 11, 11, .55);
+  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(0);
+  opacity: 0;
+  transition:
+    opacity .35s ease,
+    -webkit-backdrop-filter .35s ease,
+    backdrop-filter .35s ease;
+}
+.t-lightbox.is-open .t-lightbox-backdrop {
+  opacity: 1;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.t-lightbox-panel {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  width: min(640px, 100%);
+  background: var(--color-surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  box-shadow: 0 44px 90px -30px rgba(0, 0, 0, .75);
+  opacity: 0;
+  transition: transform .45s cubic-bezier(.2, .8, .3, 1), opacity .3s ease;
+  will-change: transform;
+}
+.t-lightbox.is-open .t-lightbox-panel { opacity: 1; }
+
+.t-lightbox-close {
+  position: absolute;
+  top: .6rem;
+  right: .6rem;
+  z-index: 2;
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: border-color .2s ease, transform .2s ease;
+}
+.t-lightbox-close:hover {
+  border-color: var(--glow-accent);
+  transform: rotate(90deg);
+}
+
+.t-lightbox-scroll {
+  max-height: calc(100vh - 2 * clamp(1rem, 4vw, 2.5rem));
+  overflow-y: auto;
+  padding: .8rem;
+}
+
+.t-lightbox-media,
+.t-lightbox-video {
+  display: block;
+  width: 100%;
+  border-radius: calc(var(--radius) - 4px);
+  border: 1px solid var(--border-soft);
+  background: var(--color-surface);
+}
+.t-lightbox-media + .t-lightbox-media,
+.t-lightbox-media + .t-lightbox-video,
+.t-lightbox-video + .t-lightbox-media,
+.t-lightbox-video + .t-lightbox-video {
+  margin-top: .9rem;
+}
+.t-lightbox-video { aspect-ratio: 16 / 9; }
+
+.t-lightbox-caption {
+  margin: 1rem 0 0;
+  text-align: center;
+  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+}
+
+.t-lightbox-cta {
+  display: block;
+  width: max-content;
+  margin: 1.1rem auto .4rem;
+}
+.t-lightbox-cta.is-hidden { display: none; }
+
 .proof-card {
   position: relative;
   flex-shrink: 0;
