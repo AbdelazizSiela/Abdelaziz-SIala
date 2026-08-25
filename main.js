@@ -370,6 +370,10 @@ function initMarquee(config) {
 
   var COUNT = config.items.length;
   var IMG_BASE = config.imgBase;
+  var IMG_START = config.imgStart || 1;         // first image number to load
+  var SHOW_TEXT = config.showText !== false;    // title/description below image
+  var AXIS = config.axis === 'y' ? 'y' : 'x';   // scroll/drag direction
+  var REVERSE = !!config.reverse;               // flip autoscroll direction
 
   /* One entry per image. Edit titles, descriptions & links here.
      `link` is where the card navigates when clicked (opens in a new tab). */
@@ -399,7 +403,7 @@ function initMarquee(config) {
 
       var img = document.createElement('img');
       img.className = 'proof-media';
-      img.src = IMG_BASE + (i + 1) + '.png';
+      img.src = IMG_BASE + (IMG_START + i) + '.png';
       img.alt = '';
       img.draggable = false;
       img.loading = 'lazy';
@@ -408,18 +412,19 @@ function initMarquee(config) {
         this.classList.add('is-missing'); // placeholder look until user drops real images in
       });
 
-      var title = document.createElement('figcaption');
-      var strong = document.createElement('span');
-      strong.className = 'proof-title';
-      strong.textContent = item.title;
-      var desc = document.createElement('span');
-      desc.className = 'proof-desc';
-      desc.textContent = item.desc;
-      title.appendChild(strong);
-      title.appendChild(desc);
-
       link.appendChild(img);
-      link.appendChild(title);
+      if (SHOW_TEXT) {
+        var title = document.createElement('figcaption');
+        var strong = document.createElement('span');
+        strong.className = 'proof-title';
+        strong.textContent = item.title;
+        var desc = document.createElement('span');
+        desc.className = 'proof-desc';
+        desc.textContent = item.desc;
+        title.appendChild(strong);
+        title.appendChild(desc);
+        link.appendChild(title);
+      }
       card.appendChild(link);
       track.appendChild(card);
 
@@ -437,15 +442,19 @@ function initMarquee(config) {
 
   /* ---- Duplicate until we can loop seamlessly ---------------------------- */
   function setWidth() {
-    // scrollWidth omits the trailing flex gap; add one back so one "set"
-    // measures exactly COUNT cards + COUNT gaps.
+    // scrollWidth/scrollHeight omits the trailing flex gap; add one back so one
+    // "set" measures exactly COUNT cards + COUNT gaps.
     var gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
+    if (AXIS === 'y') {
+      return (track.scrollHeight + gap) / copies;
+    }
     return (track.scrollWidth + gap) / copies;
   }
 
   var copies = 1;
   function ensureCopies() {
-    var needed = Math.ceil((marquee.clientWidth * 2) / Math.max(1, track.scrollWidth)) + 1;
+    var span = AXIS === 'y' ? marquee.clientHeight : marquee.clientWidth;
+    var needed = Math.ceil((span * 2) / Math.max(1, AXIS === 'y' ? track.scrollHeight : track.scrollWidth)) + 1;
     var target = Math.min(Math.max(needed, 2), MAX_COPIES);
     while (copies < target) {
       for (var i = 0; i < COUNT * copies; i++) {
@@ -536,16 +545,21 @@ function initMarquee(config) {
       if (!hovering && speedFactor > 0.999) speedFactor = 1;
       if (hovering && speedFactor < 0.001) speedFactor = 0;
 
-      // drag velocity is negative when moving left, so SUBTRACT it:
-      // a leftward fling speeds the leftward autoscroll up instead of reversing
-      var speed = BASE_SPEED * speedFactor - velocity;
+      // drag velocity is negative in the autoscroll direction, so SUBTRACT it:
+      // a fling along the scroll direction speeds the autoscroll up instead of reversing
+      var baseSpeed = REVERSE ? -BASE_SPEED : BASE_SPEED;
+      var speed = baseSpeed * speedFactor - velocity;
       offset -= speed * dt;
       velocity *= Math.pow(FRICTION, dt * 60);
       if (Math.abs(velocity) < 1) velocity = 0;
       if (!motion.matches || velocity !== 0) {
         // reduced motion: only move while there is flick momentum left
         wrapOffset();
-        track.style.transform = 'translate3d(' + offset.toFixed(2) + 'px,0,0)';
+        if (AXIS === 'y') {
+          track.style.transform = 'translate3d(0,' + offset.toFixed(2) + 'px,0)';
+        } else {
+          track.style.transform = 'translate3d(' + offset.toFixed(2) + 'px,0,0)';
+        }
       }
       if (motion.matches && velocity === 0) {
         rafId = null;
@@ -569,7 +583,7 @@ function initMarquee(config) {
      absolute drag origin, so modulo wrapping can never desync the gesture. */
   var dragging = false;
   var pointerId = null;
-  var lastX = 0;
+  var lastPos = 0;
   var lastT = 0;
   var dragDist = 0; // total px moved this gesture — used to cancel link clicks
   var downLink = null; // link under the pointer when the gesture started
@@ -599,7 +613,7 @@ function initMarquee(config) {
   marquee.addEventListener('pointerdown', function (e) {
     dragging = true;
     pointerId = e.pointerId;
-    lastX = e.clientX;
+    lastPos = AXIS === 'y' ? e.clientY : e.clientX;
     lastT = performance.now();
     velocity = 0;
     dragDist = 0;
@@ -613,23 +627,28 @@ function initMarquee(config) {
 
   marquee.addEventListener('pointermove', function (e) {
     if (!dragging || e.pointerId !== pointerId) return;
-    var dx = e.clientX - lastX;
-    lastX = e.clientX;
-    dragDist += Math.abs(dx);
+    var pos = AXIS === 'y' ? e.clientY : e.clientX;
+    var d = pos - lastPos;
+    lastPos = pos;
+    dragDist += Math.abs(d);
 
     var now = performance.now();
     var dtMs = now - lastT;
     lastT = now;
 
-    offset += dx;
+    offset += d;
     if (dtMs > 0) {
       // px/s of the most recent movement — becomes flick momentum on release
-      var instantV = (dx / dtMs) * 1000;
+      var instantV = (d / dtMs) * 1000;
       velocity = velocity * 0.6 + instantV * 0.4;
     }
 
     wrapOffset();
-    track.style.transform = 'translate3d(' + offset.toFixed(2) + 'px,0,0)';
+    if (AXIS === 'y') {
+      track.style.transform = 'translate3d(0,' + offset.toFixed(2) + 'px,0)';
+    } else {
+      track.style.transform = 'translate3d(' + offset.toFixed(2) + 'px,0,0)';
+    }
   });
 
   marquee.addEventListener('pointerup', function (e) {
@@ -695,19 +714,36 @@ initMarquee({
 });
 
 /* ---- Testimonials: "What People Say About Working With Me" ---------------- */
+/* Two vertical columns side by side — left scrolls up, right scrolls down. */
+var TESTIMONIAL_ITEMS = [
+  { title: '"Placeholder Quote 1"', desc: 'Name — Role / Project', link: '#' },
+  { title: '"Placeholder Quote 2"', desc: 'Name — Role / Project', link: '#' },
+  { title: '"Placeholder Quote 3"', desc: 'Name — Role / Project', link: '#' },
+  { title: '"Placeholder Quote 4"', desc: 'Name — Role / Project', link: '#' },
+  { title: '"Placeholder Quote 5"', desc: 'Name — Role / Project', link: '#' },
+  { title: '"Placeholder Quote 6"', desc: 'Name — Role / Project', link: '#' },
+  { title: '"Placeholder Quote 7"', desc: 'Name — Role / Project', link: '#' },
+  { title: '"Placeholder Quote 8"', desc: 'Name — Role / Project', link: '#' }
+];
+
 initMarquee({
-  marqueeId: 'testimonials-marquee',
-  trackId: 'testimonials-marquee-track',
+  marqueeId: 'testimonials-marquee-a',
+  trackId: 'testimonials-marquee-track-a',
   imgBase: 'images/testimonials/testimonial_',
   tooltip: 'Click me!',
-  items: [
-    { title: '"Placeholder Quote 1"', desc: 'Name — Role / Project', link: '#' },
-    { title: '"Placeholder Quote 2"', desc: 'Name — Role / Project', link: '#' },
-    { title: '"Placeholder Quote 3"', desc: 'Name — Role / Project', link: '#' },
-    { title: '"Placeholder Quote 4"', desc: 'Name — Role / Project', link: '#' },
-    { title: '"Placeholder Quote 5"', desc: 'Name — Role / Project', link: '#' },
-    { title: '"Placeholder Quote 6"', desc: 'Name — Role / Project', link: '#' },
-    { title: '"Placeholder Quote 7"', desc: 'Name — Role / Project', link: '#' },
-    { title: '"Placeholder Quote 8"', desc: 'Name — Role / Project', link: '#' }
-  ]
+  axis: 'y',
+  showText: false, // image-only cards
+  items: TESTIMONIAL_ITEMS.slice(0, Math.ceil(TESTIMONIAL_ITEMS.length / 2))
+});
+
+initMarquee({
+  marqueeId: 'testimonials-marquee-b',
+  trackId: 'testimonials-marquee-track-b',
+  imgBase: 'images/testimonials/testimonial_',
+  tooltip: 'Click me!',
+  axis: 'y',
+  reverse: true,
+  showText: false, // image-only cards
+  imgStart: Math.ceil(TESTIMONIAL_ITEMS.length / 2) + 1, // testimonial_5.png onwards
+  items: TESTIMONIAL_ITEMS.slice(Math.ceil(TESTIMONIAL_ITEMS.length / 2))
 });

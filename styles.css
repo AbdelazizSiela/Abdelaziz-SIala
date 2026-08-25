@@ -542,6 +542,31 @@ a { color: inherit; text-decoration: none; }
   will-change: transform;
 }
 
+/* --------------------------------------------------------------------------
+   Vertical marquee variant — twin columns scrolling in opposite directions.
+   -------------------------------------------------------------------------- */
+.v-marquee-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--marquee-gap, 1.75rem);
+}
+.marquee-v {
+  height: clamp(420px, 65vh, 660px);
+  touch-action: pan-x; /* vertical drag captured here, horizontal page scroll still works */
+  padding: clamp(1.5rem, 4vw, 2.5rem) 0;
+  margin: calc(clamp(1.5rem, 4vw, 2.5rem) * -1) 0;
+  /* Fade top/bottom edges so cards dissolve into the background */
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 6%, #000 94%, transparent);
+}
+.marquee-v .marquee-track {
+  flex-direction: column;
+  width: auto;
+}
+.marquee-v .proof-card {
+  width: min(100%, 380px);
+}
+
 .proof-card {
   position: relative;
   flex-shrink: 0;
