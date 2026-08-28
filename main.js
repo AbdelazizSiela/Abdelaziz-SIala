@@ -1025,79 +1025,79 @@ var testimonialLightbox = (function () {
      showcase — shortcut: single project image
      link     — where "View Original Review" goes                                */
 var TESTIMONIAL_ITEMS = [
-  { img: 'images/testimonials/testimonial_1.png',
+  { img: 'images/testimonials/poppies/thumb.png',
     title: 'Poppies - A platformer rage game',
-    detail: 'images/testimonials/detail_1.png',
+    detail: 'images/testimonials/poppies/review.png',
     media: [
-      { type: 'video', src: 'videos/review_1.mp4' },
-      { type: 'image', src: 'images/testimonials/poppies_1.png' },
-      { type: 'image', src: 'images/testimonials/poppies_2.png' },
-      { type: 'image', src: 'images/testimonials/poppies_3.png' },
-      { type: 'image', src: 'images/testimonials/poppies_4.png' },
-      { type: 'image', src: 'images/testimonials/poppies_5.png' }
+      { type: 'video', src: 'videos/poppies/review.mp4' },
+      { type: 'image', src: 'images/testimonials/poppies/shot_1.png' },
+      { type: 'image', src: 'images/testimonials/poppies/shot_2.png' },
+      { type: 'image', src: 'images/testimonials/poppies/shot_3.png' },
+      { type: 'image', src: 'images/testimonials/poppies/shot_4.png' },
+      { type: 'image', src: 'images/testimonials/poppies/shot_5.png' }
     ],
     link: 'http://www.fiverr.com/abdelazizsiela' },
-  { img: 'images/testimonials/testimonial_2.png',
+  { img: 'images/testimonials/secure-networking/thumb.png',
     title: 'Secure Networking Journey - A web-based interactive game',
-    detail: 'images/testimonials/detail_2.png',
+    detail: 'images/testimonials/secure-networking/review.png',
     media: [
-      { type: 'video', src: 'videos/review_2.mp4' },
-      { type: 'image', src: 'images/testimonials/securenet_1.png' },
-      { type: 'image', src: 'images/testimonials/securenet_2.png' },
-      { type: 'image', src: 'images/testimonials/securenet_3.png' },
-      { type: 'image', src: 'images/testimonials/securenet_4.png' },
-      { type: 'image', src: 'images/testimonials/securenet_5.png' }
+      { type: 'video', src: 'videos/secure-networking/review.mp4' },
+      { type: 'image', src: 'images/testimonials/secure-networking/shot_1.png' },
+      { type: 'image', src: 'images/testimonials/secure-networking/shot_2.png' },
+      { type: 'image', src: 'images/testimonials/secure-networking/shot_3.png' },
+      { type: 'image', src: 'images/testimonials/secure-networking/shot_4.png' },
+      { type: 'image', src: 'images/testimonials/secure-networking/shot_5.png' }
     ],
     link: 'https://www.freelancer.com/u/AbdelazizSiela?review_context_id=39591423&review_type=project&frm=AbdelazizSiela&sb=t' },
-  { img: 'images/testimonials/testimonial_3.png',
+  { img: 'images/testimonials/parrot-flip/thumb.png',
     title: 'Parrot Flip - Flappy Bird Style Game for Telegram',
-    detail: 'images/testimonials/detail_3.png',
+    detail: 'images/testimonials/parrot-flip/review.png',
     media: [
-      { type: 'video', src: 'videos/review_3.mp4' },
-      { type: 'image', src: 'images/testimonials/parrotflip_1.png' },
-      { type: 'image', src: 'images/testimonials/parrotflip_2.png' },
-      { type: 'image', src: 'images/testimonials/parrotflip_3.png' },
-      { type: 'image', src: 'images/testimonials/parrotflip_4.png' }
+      { type: 'video', src: 'videos/parrot-flip/review.mp4' },
+      { type: 'image', src: 'images/testimonials/parrot-flip/shot_1.png' },
+      { type: 'image', src: 'images/testimonials/parrot-flip/shot_2.png' },
+      { type: 'image', src: 'images/testimonials/parrot-flip/shot_3.png' },
+      { type: 'image', src: 'images/testimonials/parrot-flip/shot_4.png' }
     ],
-    link: '#' },
-  { img: 'images/testimonials/testimonial_4.png',
+    link: 'https://www.upwork.com/freelancers/~012da270323100a2e9?mp_source=share' },
+  { img: 'images/testimonials/attack-on-monsters/thumb.png',
     title: 'Attack On Monsters - An endless runner game',
-    detail: 'images/testimonials/detail_4.png',
+    detail: 'images/testimonials/attack-on-monsters/review.png',
     media: [
-      { type: 'video', src: 'videos/review_4.mp4' },
-      { type: 'image', src: 'images/testimonials/attackonmonsters_1.png' }
+      { type: 'video', src: 'videos/attack-on-monsters/review.mp4' },
+      { type: 'image', src: 'images/testimonials/attack-on-monsters/shot_1.png' }
     ],
-    link: '#http://www.fiverr.com/abdelazizsiela' },
-  { img: 'images/testimonials/testimonial_5.png',
+    link: 'http://www.fiverr.com/abdelazizsiela' },
+  { img: 'images/testimonials/gekoly-runner/thumb.png',
     title: 'Gekoly Runner - An endless runner mobile game',
-    detail: 'images/testimonials/detail_5.png',
+    detail: 'images/testimonials/gekoly-runner/review.png',
     media: [
-      { type: 'video', src: 'videos/review_5.mp4' },
-      { type: 'image', src: 'images/testimonials/gekolyrunner_1.png' }
+      { type: 'video', src: 'videos/gekoly-runner/review.mp4' },
+      { type: 'image', src: 'images/testimonials/gekoly-runner/shot_1.png' }
     ],
     link: 'http://www.fiverr.com/abdelazizsiela' },
-  { img: 'images/testimonials/testimonial_6.png',
+  { img: 'images/testimonials/planes-attack/thumb.png',
     title: 'Planes Attack - An endless shooter game',
-    detail: 'images/testimonials/detail_6.png',
+    detail: 'images/testimonials/planes-attack/review.png',
     media: [
-      { type: 'video', src: 'videos/review_6.mp4' },
-      { type: 'image', src: 'images/testimonials/planesattack_1.png' }
+      { type: 'video', src: 'videos/planes-attack/review.mp4' },
+      { type: 'image', src: 'images/testimonials/planes-attack/shot_1.png' }
     ],
     link: 'http://www.fiverr.com/abdelazizsiela' },
-  { img: 'images/testimonials/testimonial_7.png',
+  { img: 'images/testimonials/steps/thumb.png',
     title: 'Steps - A puzzle game',
-    detail: 'images/testimonials/detail_7.png',
+    detail: 'images/testimonials/steps/review.png',
     media: [
-      { type: 'video', src: 'videos/review_7.mp4' },
-      { type: 'image', src: 'images/testimonials/steps_1.png' }
+      { type: 'video', src: 'videos/steps/review.mp4' },
+      { type: 'image', src: 'images/testimonials/steps/shot_1.png' }
     ],
     link: 'http://www.fiverr.com/abdelazizsiela' },
-  { img: 'images/testimonials/testimonial_8.png',
+  { img: 'images/testimonials/end-of-civilization/thumb.png',
     title: 'End Of Civilization - A First-Person-Shooter game',
-    detail: 'images/testimonials/detail_8.png',
+    detail: 'images/testimonials/end-of-civilization/review.png',
     media: [
-      { type: 'video', src: 'videos/review_8.mp4' },
-      { type: 'image', src: 'images/testimonials/endoflight_1.png' }
+      { type: 'video', src: 'videos/end-of-civilization/review.mp4' },
+      { type: 'image', src: 'images/testimonials/end-of-civilization/shot_1.png' }
     ],
     link: 'http://www.fiverr.com/abdelazizsiela' }
 ];
