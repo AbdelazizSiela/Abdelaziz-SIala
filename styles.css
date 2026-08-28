@@ -681,6 +681,31 @@ body.t-modal-open { overflow: hidden; }
 }
 .t-lightbox-left .t-lightbox-media { width: 100%; padding: 10px; box-sizing: border-box; }
 
+/* Popup media carousel (right column) — reuses hero .gallery classes */
+.t-lightbox-scroll .gallery-slide img { cursor: default; }
+.t-lightbox-scroll .gallery-slide video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+/* Arrows back to centered; dots get their own strip below the media so they
+   never overlap the video's native bottom controls */
+.t-lightbox-scroll .gallery {
+  padding-bottom: 2.4rem;
+}
+.t-lightbox-scroll .gallery-slides {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 2.4rem;
+}
+.t-lightbox-scroll .gallery-dots {
+  bottom: .15rem;
+}
+
 .t-lightbox-media,
 .t-lightbox-video {
   display: block;
@@ -696,6 +721,17 @@ body.t-modal-open { overflow: hidden; }
   margin: .2rem 0 0;
   text-align: center;
   color: color-mix(in srgb, var(--color-text) 70%, transparent);
+}
+
+/* Title centered above the review image in the left column */
+.t-lightbox-title {
+  margin: 0;
+  text-align: center;
+  font-family: inherit;
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-text);
 }
 
 .t-lightbox-cta {

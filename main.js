@@ -790,12 +790,109 @@ var testimonialLightbox = (function () {
     });
   }
 
+  // Normalize a testimonial's media into a list of {type, src}.
+  // `media` is an explicit array; `video`/`showcase` still work as shortcuts.
+  function mediaList(item) {
+    var list = (item.media || []).slice();
+    if (item.video) list.unshift({ type: 'video', src: item.video });
+    if (item.showcase) list.push({ type: 'image', src: item.showcase });
+    return list;
+  }
+
+  // Fade carousel (same look as the hero gallery) that mixes videos and images.
+  function buildCarousel(entries) {
+    var gallery = document.createElement('div');
+    gallery.className = 'gallery';
+    var slidesWrap = document.createElement('div');
+    slidesWrap.className = 'gallery-slides';
+
+    var prevBtn = document.createElement('button');
+    prevBtn.type = 'button';
+    prevBtn.className = 'gallery-btn gallery-prev';
+    prevBtn.setAttribute('aria-label', 'Previous');
+    prevBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>';
+
+    var nextBtn = document.createElement('button');
+    nextBtn.type = 'button';
+    nextBtn.className = 'gallery-btn gallery-next';
+    nextBtn.setAttribute('aria-label', 'Next');
+    nextBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+
+    var dotsWrap = document.createElement('div');
+    dotsWrap.className = 'gallery-dots';
+    dotsWrap.setAttribute('role', 'tablist');
+
+    var slides = [], dots = [], idx = 0;
+
+    function show(i) {
+      idx = (i + slides.length) % slides.length;
+      for (var s = 0; s < slides.length; s++) {
+        var active = s === idx;
+        slides[s].classList.toggle('is-active', active);
+        dots[s].classList.toggle('is-active', active);
+        dots[s].setAttribute('aria-selected', active ? 'true' : 'false');
+        // don't let hidden slides keep playing audio
+        var v = slides[s].querySelector('video');
+        if (v && !active) v.pause();
+      }
+    }
+
+    entries.forEach(function (entry, i) {
+      var slide = document.createElement('div');
+      slide.className = 'gallery-slide';
+      if (entry.type === 'video') {
+        var vid = document.createElement('video');
+        vid.className = 't-lightbox-video';
+        vid.src = entry.src;
+        vid.controls = true;
+        vid.playsInline = true;
+        vid.preload = 'metadata';
+        slide.appendChild(vid);
+      } else {
+        var img = document.createElement('img');
+        img.className = 't-lightbox-media';
+        img.src = entry.src;
+        img.alt = '';
+        img.draggable = false;
+        slide.appendChild(img);
+      }
+
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'gallery-dot';
+      dot.setAttribute('role', 'tab');
+      dot.setAttribute('aria-label', 'Media ' + (i + 1));
+      dot.addEventListener('click', function () { show(i); });
+
+      slidesWrap.appendChild(slide);
+      dotsWrap.appendChild(dot);
+      slides.push(slide);
+      dots.push(dot);
+    });
+
+    prevBtn.addEventListener('click', function () { show(idx - 1); });
+    nextBtn.addEventListener('click', function () { show(idx + 1); });
+
+    gallery.appendChild(slidesWrap);
+    gallery.appendChild(prevBtn);
+    gallery.appendChild(nextBtn);
+    gallery.appendChild(dotsWrap);
+    show(0);
+    return gallery;
+  }
+
   function fill(item) {
     body.innerHTML = '';
 
-    // Left column: review screenshot + "View Original Review", centered as a group
+    // Left column: title (centered) + review screenshot + "View Original Review"
     var left = document.createElement('div');
     left.className = 't-lightbox-left';
+    if (item.title) {
+      var h = document.createElement('h3');
+      h.className = 't-lightbox-title';
+      h.textContent = item.title;
+      left.appendChild(h);
+    }
     if (item.detail) {
       var img = document.createElement('img');
       img.className = 't-lightbox-media';
@@ -813,29 +910,29 @@ var testimonialLightbox = (function () {
     left.appendChild(cta);
     body.appendChild(left);
 
-    // Right column: project proof — video if provided, otherwise a showcase image
-    if (item.video) {
-      var vid = document.createElement('video');
-      vid.className = 't-lightbox-video';
-      vid.src = item.video;
-      vid.controls = true;
-      vid.playsInline = true;
-      vid.preload = 'metadata';
-      body.appendChild(vid);
-    } else if (item.showcase) {
-      var shot = document.createElement('img');
-      shot.className = 't-lightbox-media';
-      shot.src = item.showcase;
-      shot.alt = '';
-      shot.draggable = false;
-      body.appendChild(shot);
-    }
-
-    if (item.desc) {
-      var cap = document.createElement('p');
-      cap.className = 't-lightbox-caption';
-      cap.textContent = item.desc;
-      body.appendChild(cap);
+    // Right column: project proof carousel — mixes videos and images.
+    var entries = mediaList(item);
+    if (entries.length > 1) {
+      body.appendChild(buildCarousel(entries));
+    } else if (entries.length === 1) {
+      // single item — no carousel chrome
+      var entry = entries[0];
+      if (entry.type === 'video') {
+        var vid = document.createElement('video');
+        vid.className = 't-lightbox-video';
+        vid.src = entry.src;
+        vid.controls = true;
+        vid.playsInline = true;
+        vid.preload = 'metadata';
+        body.appendChild(vid);
+      } else {
+        var shot = document.createElement('img');
+        shot.className = 't-lightbox-media';
+        shot.src = entry.src;
+        shot.alt = '';
+        shot.draggable = false;
+        body.appendChild(shot);
+      }
     }
   }
 
@@ -919,51 +1016,90 @@ var testimonialLightbox = (function () {
    Per item:
      img      — thumbnail in the marquee (testimonial_N.png)
      detail   — review screenshot shown in the popup (separate file)
-     showcase — project image shown in the popup (used when there's no video)
-     video    — optional; replaces the showcase image with an embedded player
+     media    — OPTIONAL array for the popup carousel, e.g.:
+                  media: [
+                    { type: 'video', src: 'videos/review_1.mp4' },
+                    { type: 'image', src: 'images/testimonials/shot_1a.png' }
+                  ]
+     video    — shortcut: single video (replaces showcase)
+     showcase — shortcut: single project image
      link     — where "View Original Review" goes                                */
 var TESTIMONIAL_ITEMS = [
   { img: 'images/testimonials/testimonial_1.png',
-    desc: 'Name — Role / Project',
+    title: 'Poppies - A platformer rage game',
     detail: 'images/testimonials/detail_1.png',
-    showcase: 'images/testimonials/showcase_1.png',
-     video: 'videos/review_1.mp4',
+    media: [
+      { type: 'video', src: 'videos/review_1.mp4' },
+      { type: 'image', src: 'images/testimonials/poppies_1.png' },
+      { type: 'image', src: 'images/testimonials/poppies_2.png' },
+      { type: 'image', src: 'images/testimonials/poppies_3.png' },
+      { type: 'image', src: 'images/testimonials/poppies_4.png' },
+      { type: 'image', src: 'images/testimonials/poppies_5.png' }
+    ],
     link: 'http://www.fiverr.com/abdelazizsiela' },
   { img: 'images/testimonials/testimonial_2.png',
-    desc: 'Name — Role / Project',
+    title: 'Secure Networking Journey - A web-based interactive game',
     detail: 'images/testimonials/detail_2.png',
-    showcase: 'images/testimonials/showcase_2.png',
-    link: '#' },
+    media: [
+      { type: 'video', src: 'videos/review_2.mp4' },
+      { type: 'image', src: 'images/testimonials/securenet_1.png' },
+      { type: 'image', src: 'images/testimonials/securenet_2.png' },
+      { type: 'image', src: 'images/testimonials/securenet_3.png' },
+      { type: 'image', src: 'images/testimonials/securenet_4.png' },
+      { type: 'image', src: 'images/testimonials/securenet_5.png' }
+    ],
+    link: 'https://www.freelancer.com/u/AbdelazizSiela?review_context_id=39591423&review_type=project&frm=AbdelazizSiela&sb=t' },
   { img: 'images/testimonials/testimonial_3.png',
-    desc: 'Name — Role / Project',
+    title: 'Parrot Flip - Flappy Bird Style Game for Telegram',
     detail: 'images/testimonials/detail_3.png',
-    showcase: 'images/testimonials/showcase_3.png',
+    media: [
+      { type: 'video', src: 'videos/review_3.mp4' },
+      { type: 'image', src: 'images/testimonials/parrotflip_1.png' },
+      { type: 'image', src: 'images/testimonials/parrotflip_2.png' },
+      { type: 'image', src: 'images/testimonials/parrotflip_3.png' },
+      { type: 'image', src: 'images/testimonials/parrotflip_4.png' }
+    ],
     link: '#' },
   { img: 'images/testimonials/testimonial_4.png',
-    desc: 'Name — Role / Project',
+    title: 'Attack On Monsters - An endless runner game',
     detail: 'images/testimonials/detail_4.png',
-    showcase: 'images/testimonials/showcase_4.png',
-    link: '#' },
+    media: [
+      { type: 'video', src: 'videos/review_4.mp4' },
+      { type: 'image', src: 'images/testimonials/attackonmonsters_1.png' }
+    ],
+    link: '#http://www.fiverr.com/abdelazizsiela' },
   { img: 'images/testimonials/testimonial_5.png',
-    desc: 'Name — Role / Project',
+    title: 'Gekoly Runner - An endless runner mobile game',
     detail: 'images/testimonials/detail_5.png',
-    showcase: 'images/testimonials/showcase_5.png',
-    link: '#' },
+    media: [
+      { type: 'video', src: 'videos/review_5.mp4' },
+      { type: 'image', src: 'images/testimonials/gekolyrunner_1.png' }
+    ],
+    link: 'http://www.fiverr.com/abdelazizsiela' },
   { img: 'images/testimonials/testimonial_6.png',
-    desc: 'Name — Role / Project',
+    title: 'Planes Attack - An endless shooter game',
     detail: 'images/testimonials/detail_6.png',
-    showcase: 'images/testimonials/showcase_6.png',
-    link: '#' },
+    media: [
+      { type: 'video', src: 'videos/review_6.mp4' },
+      { type: 'image', src: 'images/testimonials/planesattack_1.png' }
+    ],
+    link: 'http://www.fiverr.com/abdelazizsiela' },
   { img: 'images/testimonials/testimonial_7.png',
-    desc: 'Name — Role / Project',
+    title: 'Steps - A puzzle game',
     detail: 'images/testimonials/detail_7.png',
-    showcase: 'images/testimonials/showcase_7.png',
-    link: '#' },
+    media: [
+      { type: 'video', src: 'videos/review_7.mp4' },
+      { type: 'image', src: 'images/testimonials/steps_1.png' }
+    ],
+    link: 'http://www.fiverr.com/abdelazizsiela' },
   { img: 'images/testimonials/testimonial_8.png',
-    desc: 'Name — Role / Project',
+    title: 'End Of Civilization - A First-Person-Shooter game',
     detail: 'images/testimonials/detail_8.png',
-    showcase: 'images/testimonials/showcase_8.png',
-    link: '#' }
+    media: [
+      { type: 'video', src: 'videos/review_8.mp4' },
+      { type: 'image', src: 'images/testimonials/endoflight_1.png' }
+    ],
+    link: 'http://www.fiverr.com/abdelazizsiela' }
 ];
 
 initMarquee({
