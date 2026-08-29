@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="colors.css?v=8">
-  <link rel="stylesheet" href="styles.css?v=19">
+  <link rel="stylesheet" href="colors.css?v=25">
+  <link rel="stylesheet" href="styles.css?v=25">
 </head>
 
 <body id="top">
@@ -169,29 +169,64 @@ Tailor your game idea to your skills, build it by solving whatever problems come
     <section class="section" id="how-it-works" aria-label="How it works">
       <div class="wrap">
         <div class="section-head">
-          <p class="section-tag">02 — Process</p>
           <h2 class="section-title">How it works</h2>
         </div>
-        <div class="placeholder-card">
-          <p class="placeholder-label">Process placeholder</p>
-          <p class="placeholder-note">Step-by-step breakdown goes here.</p>
-          <div class="skeleton-col cols-3" style="margin-top:1.6rem">
-            <div class="mini">
-              <div class="skeleton h-lg w-50"></div>
-              <div class="skeleton h-sm w-80" style="margin-top:.8rem"></div>
-              <div class="skeleton h-sm w-90" style="margin-top:.5rem"></div>
-            </div>
-            <div class="mini">
-              <div class="skeleton h-lg w-50"></div>
-              <div class="skeleton h-sm w-80" style="margin-top:.8rem"></div>
-              <div class="skeleton h-sm w-90" style="margin-top:.5rem"></div>
-            </div>
-            <div class="mini">
-              <div class="skeleton h-lg w-50"></div>
-              <div class="skeleton h-sm w-80" style="margin-top:.8rem"></div>
-              <div class="skeleton h-sm w-90" style="margin-top:.5rem"></div>
-            </div>
-          </div>
+        <!-- Four pillars, one per stage. Images auto-load from images/pillars/
+             pillar_1.png ... pillar_4.png (sequential names). Just drop files
+             into the folder and reload. Titles & descriptions live in main.js
+             (PILLAR_ITEMS). -->
+        <div class="pillars" id="pillars"></div>
+      </div>
+    </section>
+
+    <!-- Not another course -->
+    <section class="section" id="not-a-course" aria-label="This isn't another game dev course">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="section-title">This Isn't Another Game Dev Course</h2>
+        </div>
+        <div class="compare-scroll">
+          <table class="compare">
+            <thead>
+              <tr>
+                <th class="compare-row-label" scope="col"><span class="visually-hidden">Compare</span></th>
+                <th scope="col" class="compare-courses">Tutorials / Courses</th>
+                <th scope="col" class="compare-mentee">This Mentorship</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" class="compare-row-label">How you plan</th>
+                <td class="compare-courses">Follow a predefined project</td>
+                <td class="compare-mentee">Plan around your skills</td>
+              </tr>
+              <tr>
+                <th scope="row" class="compare-row-label">What you build</th>
+                <td class="compare-courses">Follow someone else's project</td>
+                <td class="compare-mentee">Your own game</td>
+              </tr>
+              <tr>
+                <th scope="row" class="compare-row-label">What you learn</th>
+                <td class="compare-courses">How to follow steps</td>
+                <td class="compare-mentee">How to figure things out</td>
+              </tr>
+              <tr>
+                <th scope="row" class="compare-row-label">When you're stuck</th>
+                <td class="compare-courses">Find another tutorial</td>
+                <td class="compare-mentee">How to solve problems</td>
+              </tr>
+              <tr>
+                <th scope="row" class="compare-row-label">Who makes the decisions</th>
+                <td class="compare-courses">The instructor</td>
+                <td class="compare-mentee">You</td>
+              </tr>
+              <tr>
+                <th scope="row" class="compare-row-label">The goal</th>
+                <td class="compare-courses">Finish the course</td>
+                <td class="compare-mentee">Become independent</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -200,7 +235,6 @@ Tailor your game idea to your skills, build it by solving whatever problems come
     <section class="section" id="offer" aria-label="The offer">
       <div class="wrap">
         <div class="section-head">
-          <p class="section-tag">03 — Offer</p>
           <h2 class="section-title">The offer</h2>
         </div>
         <div class="placeholder-card offer-card">
@@ -219,7 +253,6 @@ Tailor your game idea to your skills, build it by solving whatever problems come
     <section class="section" id="faq" aria-label="Frequently asked questions">
       <div class="wrap">
         <div class="section-head">
-          <p class="section-tag">04 — FAQ</p>
           <h2 class="section-title">Questions &amp; answers</h2>
         </div>
         <div class="placeholder-card">
@@ -254,6 +287,6 @@ Tailor your game idea to your skills, build it by solving whatever problems come
     </div>
   </footer>
 
-  <script src="main.js?v=19"></script>
+  <script src="main.js?v=25"></script>
 </body>
 </html>

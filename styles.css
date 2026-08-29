@@ -683,6 +683,7 @@ body.t-modal-open { overflow: hidden; }
 
 /* Popup media carousel (right column) — reuses hero .gallery classes */
 .t-lightbox-scroll .gallery-slide img { cursor: default; }
+.t-lightbox-scroll .gallery:hover { transform: none; box-shadow: none; }
 .t-lightbox-scroll .gallery-slide video {
   display: block;
   width: 100%;
@@ -873,15 +874,6 @@ body.t-modal-open { overflow: hidden; }
 
 .section-head { margin-bottom: 2.2rem; }
 
-.section-tag {
-  margin: 0 0 .7rem;
-  font-size: .72rem;
-  font-weight: 600;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--color-accent-2);
-}
-
 .section-title {
   font-size: clamp(1.8rem, 3vw + .5rem, 2.5rem);
   font-weight: 600;
@@ -927,6 +919,145 @@ body.t-modal-open { overflow: hidden; }
   padding: 1.2rem;
   border: 1px solid var(--border-soft);
   border-radius: 12px;
+}
+
+/* ==========================================================================
+    How it works — four pillars
+    ========================================================================== */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+@media (max-width: 900px) {
+  .pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 540px) {
+  .pillars { grid-template-columns: minmax(0, 1fr); }
+}
+
+.pillar {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pillar-media {
+  display: block;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+}
+
+.pillar-title {
+  display: block;
+  margin: 1rem auto 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.pillar-desc {
+  display: block;
+  margin: .35rem auto 0;
+  max-width: 34ch;
+  font-size: .88rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+  text-align: center;
+}
+.pillar-desc strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+    Not another course — comparison table
+    ========================================================================== */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.compare-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.compare {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--color-bg-soft);
+}
+
+.compare th,
+.compare td {
+  padding: clamp(1.1rem, 2vw, 1.5rem) clamp(1rem, 2vw, 1.6rem);
+  text-align: left;
+  vertical-align: top;
+  border-top: 1px solid var(--border-soft);
+  font-size: .95rem;
+  line-height: 1.5;
+}
+
+.compare thead th {
+  border-top: none;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.compare th.compare-row-label {
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.compare th.compare-courses { border-left: 1px solid var(--border-soft); }
+.compare td.compare-courses { border-left: 1px solid var(--border-soft); }
+
+.compare th.compare-mentee { border-left: 1px solid var(--border-strong); }
+.compare td.compare-mentee { border-left: 1px solid var(--border-strong); }
+
+.compare td.compare-courses { color: var(--color-muted); }
+
+.compare th.compare-mentee {
+  color: var(--color-accent-hover);
+  box-shadow: inset 0 3px 0 var(--color-accent);
+}
+
+.compare td.compare-mentee {
+  background: var(--glow-accent-2);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+@media (max-width: 620px) {
+  .compare { min-width: 560px; }
 }
 
 .offer-card { text-align: left; }

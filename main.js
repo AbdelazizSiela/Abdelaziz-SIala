@@ -1124,3 +1124,71 @@ initMarquee({
   onCardActivate: function (item, sourceEl) { testimonialLightbox.open(item, sourceEl); },
   items: TESTIMONIAL_ITEMS
 });
+
+/* ==========================================================================
+   How it works — four pillars.
+   Cards load automatically from images/pillars/pillar_1.png ...
+   pillar_4.png (sequential names — just drop files in and reload).
+   Edit the titles & short descriptions below (one per pillar).
+   ========================================================================== */
+
+(function () {
+  'use strict';
+
+  var container = document.getElementById('pillars');
+  if (!container) return;
+
+  var PROBE_BASE = 'images/pillars/pillar_';
+  var MAX_PILLARS = 8;
+
+var PILLAR_ITEMS = [
+    { title: 'Know What to Build', desc: 'Turn your idea into a <strong>clear, realistic game</strong> that fits your skills, instead of trying to build everything at once' },
+    { title: 'Build Your Game', desc: 'Stop jumping between tutorials and <strong>build your game</strong> with a <strong>clear path forward</strong>' },
+    { title: 'Stop Feeling Stuck', desc: 'Learn how to <strong>solve problems yourself</strong> instead of being stuck every time something breaks' },
+    { title: 'Ship Your Game', desc: '<strong>Finish, publish</strong>, and put your game in the hands of <strong>real players</strong>, independently' }
+  ];
+
+  function addPillar(src, n) {
+    var item = PILLAR_ITEMS[n - 1] || {};
+
+    var card = document.createElement('figure');
+    card.className = 'pillar';
+
+    var img = document.createElement('img');
+    img.className = 'pillar-media';
+    img.src = src;
+    img.alt = item.title || ('Pillar ' + n);
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.addEventListener('error', function () {
+      this.classList.add('is-missing'); // placeholder look until real images are added
+    });
+
+    var caption = document.createElement('figcaption');
+    var title = document.createElement('span');
+    title.className = 'pillar-title';
+    title.textContent = item.title || '';
+    var desc = document.createElement('span');
+    desc.className = 'pillar-desc';
+    desc.innerHTML = item.desc || '';
+    caption.appendChild(title);
+    caption.appendChild(desc);
+
+    card.appendChild(img);
+    card.appendChild(caption);
+    container.appendChild(card);
+  }
+
+  function probe(n) {
+    if (n > MAX_PILLARS) return;
+    var img = new Image();
+    img.onload = function () {
+      addPillar(PROBE_BASE + n + '.png', n);
+      probe(n + 1);
+    };
+    img.onerror = function () { /* sequential names: stop at first gap */ };
+    img.src = PROBE_BASE + n + '.png';
+  }
+
+  probe(1);
+})();
