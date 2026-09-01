@@ -374,6 +374,7 @@ function initMarquee(config) {
   var SHOW_TEXT = config.showText !== false;    // title/description below image
   var AXIS = config.axis === 'y' ? 'y' : 'x';   // scroll/drag direction
   var REVERSE = !!config.reverse;               // flip autoscroll direction
+  var SPOTLIGHT = !!config.spotlight;           // cover-flow scale near centre
 
   /* One entry per image. Edit titles, descriptions & links here.
      `link` is where the card navigates when clicked (opens in a new tab). */
@@ -470,6 +471,36 @@ function initMarquee(config) {
     while (offset > 0) offset -= w;
   }
 
+  /* ---- Spotlight (cover-flow) scaling ------------------------------------ */
+  /* Cards nearest the marquee centre are scaled up; cards grow smoothly as
+     they approach the centre and shrink back to 1 on the way out. Heights
+     are derived from the DOM so it survives clones, gaps and media queries. */
+  function spotScale() {
+    var cards = track.children;
+    var n = cards.length;
+    if (!n) return;
+
+    var a = cards[0];
+    var step = a.offsetWidth + 16;
+    if (n > 1) step = cards[1].offsetLeft - a.offsetLeft;
+    var half = a.offsetWidth / 2;
+
+    var center = marquee.clientWidth / 2;
+    var boost = config.spotlightBoost || 0.32;   // max scale at dead centre
+    var maxD = center + half;                    // scale returns to 1 at the edges
+
+    for (var i = 0; i < n; i++) {
+      var card = cards[i];
+      if (card.offsetParent === null) { card.style.scale = '1'; card.style.zIndex = ''; continue; }
+      var pos = half + i * step + offset;
+      var d = Math.abs(pos - center);
+      var t = Math.min(1, d / maxD);
+      var s = 1 + boost * (1 - t) * (1 - t); // eased falloff
+      card.style.scale = s.toFixed(3);
+      card.style.zIndex = s > 1.05 ? String(Math.max(1, Math.round((s - 1) * 40))) : '';
+    }
+  }
+
   var copies = 1;
   function ensureCopies() {
     var span = AXIS === 'y' ? marquee.clientHeight : marquee.clientWidth;
@@ -518,7 +549,7 @@ function initMarquee(config) {
   /* ---- Cursor tooltip ("Click me!") --------------------------------------- */
   var tip = document.createElement('div');
   tip.className = 'proof-tooltip';
-  tip.textContent = config.tooltip || 'Click me!';
+  tip.textContent = config.tooltip || 'Click to verify';
   document.body.appendChild(tip);
 
   function moveTip(x, y) {
@@ -581,6 +612,8 @@ function initMarquee(config) {
         return;
       }
     }
+
+    if (SPOTLIGHT) spotScale();
 
     rafId = window.requestAnimationFrame(frame);
   }
@@ -720,6 +753,11 @@ function initMarquee(config) {
 
   /* ---- Boot ---------------------------------------------------------------- */
   wake(); // start auto-scrolling immediately
+  if (SPOTLIGHT) {
+    spotScale();
+    window.addEventListener('resize', spotScale);
+    window.addEventListener('load', spotScale);
+  }
 }
 
 /* ---- Social proof: "I've Actually Done This" ------------------------------ */
@@ -727,7 +765,8 @@ initMarquee({
   marqueeId: 'social-marquee',
   trackId: 'social-marquee-track',
   imgBase: 'images/social proof/proof_',
-  tooltip: 'Click me!',
+  spotlight: true,
+  tooltip: 'Click to verify',
   items: [
     { title: '25+ Games Built', desc: 'Across a wide range of genres and platforms', link: 'https://sites.google.com/view/abdelazizsiala' },
     { title: '2 Games Shipped on Steam', desc: 'Put two finished games in front of millions of players on Steam', link: 'https://store.steampowered.com/developer/suronix/' },
@@ -737,7 +776,21 @@ initMarquee({
   ]
 });
 
-/* ---- Testimonial case-study popup ---------------------------------------- */
+/* ---- Games showcase: "Games My Students Built" --------------------------- */
+/* Spotlight marquee — identical to the social-proof bar, except cards scale
+   up the closer they get to the centre of the strip (cover-flow style). */
+initMarquee({
+  marqueeId: 'games-marquee',
+  trackId: 'games-marquee-track',
+  spotlight: true,
+  showText: false,
+  tooltip: 'Click to verify',
+  items: [
+    { img: 'images/showcase/showcase_1.png', link: 'https://www.upwork.com/freelancers/~012da270323100a2e9?mp_source=share' },
+    { img: 'images/showcase/showcase_2.png', link: 'https://www.upwork.com/freelancers/~012da270323100a2e9?mp_source=share' },
+    { img: 'images/showcase/showcase_3.png', link: 'https://www.upwork.com/freelancers/~012da270323100a2e9?mp_source=share' }
+  ]
+});
 /* Clicking a testimonial image opens this popup. It scales up out of the
    clicked image (FLIP animation), blurs the page behind it, and shows a
    detail image + a video (or showcase image) + "View Original Review". */
@@ -1106,7 +1159,7 @@ initMarquee({
   marqueeId: 'testimonials-marquee-a',
   trackId: 'testimonials-marquee-track-a',
   imgBase: 'images/testimonials/testimonial_',
-  tooltip: 'Click me!',
+  tooltip: 'Click to verify',
   axis: 'y',
   showText: false, // image-only cards
   onCardActivate: function (item, sourceEl) { testimonialLightbox.open(item, sourceEl); },
@@ -1117,7 +1170,7 @@ initMarquee({
   marqueeId: 'testimonials-marquee-b',
   trackId: 'testimonials-marquee-track-b',
   imgBase: 'images/testimonials/testimonial_',
-  tooltip: 'Click me!',
+  tooltip: 'Click to verify',
   axis: 'y',
   reverse: true,
   showText: false, // image-only cards
@@ -1191,4 +1244,23 @@ var PILLAR_ITEMS = [
   }
 
   probe(1);
+})();
+
+/* ==========================================================================
+   FAQ accordion — opening one question closes the others
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var items = document.querySelectorAll('.faq-item');
+  if (!items.length) return;
+
+  items.forEach(function (item) {
+    item.addEventListener('toggle', function () {
+      if (!item.open) return;
+      document.querySelectorAll('.faq-item[open]').forEach(function (other) {
+        if (other !== item) other.open = false;
+      });
+    });
+  });
 })();

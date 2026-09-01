@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="colors.css?v=25">
-  <link rel="stylesheet" href="styles.css?v=25">
+  <link rel="stylesheet" href="colors.css?v=31">
+  <link rel="stylesheet" href="styles.css?v=31">
 </head>
 
 <body id="top">
@@ -22,13 +22,12 @@
     <header class="site-header">
       <div class="wrap header-inner">
         <a class="brand" href="#top" aria-label="Abdelaziz Siala — home">
-          <span class="brand-mark" aria-hidden="true"></span>
           <span class="brand-name">Abdelaziz Siala</span>
         </a>
 
         <nav class="site-nav" aria-label="Primary">
           <a href="#how-it-works">How it works</a>
-          <a href="#offer">The offer</a>
+          <a href="#offer">What you get</a>
           <a href="#faq">FAQ</a>
         </nav>
 
@@ -142,7 +141,7 @@ Tailor your game idea to your skills, build it by solving whatever problems come
         </div>
         <!-- Cards are auto-loaded from images/social proof/proof_1.png ... proof_9.png.
              Titles & descriptions live in main.js (PROOF_ITEMS). -->
-        <div class="marquee" id="social-marquee">
+        <div class="marquee marquee-spotlight" id="social-marquee">
           <div class="marquee-track" id="social-marquee-track"></div>
         </div>
       </div>
@@ -245,27 +244,27 @@ Tailor your game idea to your skills, build it by solving whatever problems come
         <ol class="milestones">
           <li class="milestone">
             <h3 class="milestone-title"><span class="milestone-num">1.</span> Plan <span class="milestone-free">Free</span></h3>
-            <p class="milestone-desc">Turn your idea into <strong>a realistic project that fits your skills</strong> and you can actually finish</p>
+            <p class="milestone-desc">Turn your idea into a realistic project that fits your skills and you can actually finish</p>
           </li>
           <li class="milestone">
             <h3 class="milestone-title"><span class="milestone-num">2.</span> Get Started<span class="milestone-price"><s class="price-old">$50</s> $10</span></h3>
-            <p class="milestone-desc">Set up your project and <strong>learn the foundations</strong> you need to start building</p>
+            <p class="milestone-desc">Set up your project and learn the foundations you need to start building</p>
           </li>
           <li class="milestone">
             <h3 class="milestone-title"><span class="milestone-num">3.</span> Learn to Solve<span class="milestone-price"><s class="price-old">$250</s> $50</span></h3>
-            <p class="milestone-desc">Learn the process of <strong>solving real development problems yourself</strong></p>
+            <p class="milestone-desc">Learn the process of solving real development problems yourself</p>
           </li>
           <li class="milestone">
             <h3 class="milestone-title"><span class="milestone-num">4.</span> Publish It<span class="milestone-price"><s class="price-old">$75</s> $15</span></h3>
-            <p class="milestone-desc">Take your <strong>finished game</strong> and publish it on <strong>a real platform like itch.io</strong>, so <strong>real players can play it</strong></p>
+            <p class="milestone-desc">Take your finished game and publish it on a real platform like itch.io, so real players can play it</p>
           </li>
           <li class="milestone">
             <h3 class="milestone-title"><span class="milestone-num">5.</span> Handle Feedback<span class="milestone-price"><s class="price-old">$50</s> $10</span></h3>
-            <p class="milestone-desc">Learn how to <strong>evaluate feedback</strong>, <strong>handle criticism</strong>, and decide <strong>what is actually worth changing</strong></p>
+            <p class="milestone-desc">Learn how to evaluate feedback, handle criticism, and decide what is actually worth changing</p>
           </li>
           <li class="milestone milestone-final">
             <h3 class="milestone-title"><span class="milestone-num">6.</span> Go Independent<span class="milestone-price"><s class="price-old">$70</s> $14</span></h3>
-            <p class="milestone-desc"><strong>Plan your next game yourself</strong> and prove you can <strong>build it without my guidance</strong></p>
+            <p class="milestone-desc">Plan your next game yourself and prove you can build it without my guidance</p>
           </li>
         </ol>
         <div class="offer-pay-note">
@@ -275,32 +274,113 @@ Tailor your game idea to your skills, build it by solving whatever problems come
       </div>
     </section>
 
+    <!-- Games showcase -->
+    <section class="section" id="games-showcase" aria-label="Games built through the mentorship">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 class="section-title">More From People I've Worked With</h2>
+        </div>
+        <!-- Auto-scrolling spotlight marquee: the card nearest the centre is
+             scaled up, cards grow as they approach the centre.
+             Images, titles, descriptions & links live in main.js (initMarquee). -->
+        <div class="marquee marquee-spotlight" id="games-marquee">
+          <div class="marquee-track" id="games-marquee-track"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- FAQ -->
     <section class="section" id="faq" aria-label="Frequently asked questions">
       <div class="wrap">
         <div class="section-head">
-          <h2 class="section-title">Questions &amp; answers</h2>
+          <h2 class="section-title">Still Have Questions?</h2>
         </div>
-        <div class="placeholder-card">
-          <p class="placeholder-label">FAQ placeholder</p>
-          <p class="placeholder-note">Real questions go here, with answers. Added later.</p>
-          <div class="skeleton-col" style="margin-top:1.4rem">
-            <div class="faq-row">
-              <div class="skeleton h-sm w-70"></div>
-              <div class="skeleton h-sm w-95" style="margin-top:.55rem"></div>
-              <div class="skeleton h-sm w-60" style="margin-top:.55rem"></div>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary class="faq-q">
+              <h3>Why not just learn this from YouTube?</h3>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-a">
+              <p>You absolutely can. I don't keep the methodology secret. The difference is having someone <strong>apply it to your specific game</strong>, <strong>correct your approach when you're going wrong</strong>, and help you <strong>figure out what you actually need to learn or solve next</strong>. You're still the one building the game. The goal is for you to <strong>eventually be able to do all of this yourself</strong>.</p>
             </div>
-            <div class="faq-row">
-              <div class="skeleton h-sm w-55"></div>
-              <div class="skeleton h-sm w-90" style="margin-top:.55rem"></div>
-              <div class="skeleton h-sm w-75" style="margin-top:.55rem"></div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">
+              <h3>Why not just use AI?</h3>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-a">
+              <p>AI can help you solve individual problems, but it <strong>doesn't know your entire development journey</strong> or <strong>take responsibility for the decisions you're making</strong>. It can give you an answer while you're <strong>solving the wrong problem</strong>, working with an <strong>unrealistic scope</strong>, or making a <strong>bad architectural decision</strong>. I help you understand <strong>what problem you're actually facing</strong>, how to approach it, and how to <strong>solve it yourself</strong>.</p>
             </div>
-            <div class="faq-row">
-              <div class="skeleton h-sm w-65"></div>
-              <div class="skeleton h-sm w-85" style="margin-top:.55rem"></div>
-              <div class="skeleton h-sm w-50" style="margin-top:.55rem"></div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">
+              <h3>Isn't this just another game dev course?</h3>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-a">
+              <p>No. You aren't following my project or watching a predefined curriculum. You're <strong>building your own game</strong>, with the plan, scope, learning, and problem-solving <strong>tailored around your skills and your project</strong>. The goal isn't to finish a course. It's to <strong>finish your game and become capable of building the next one yourself</strong>.</p>
             </div>
-          </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">
+              <h3>What if I don't know enough to start?</h3>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-a">
+              <p>That's exactly why we start with a <strong>project suited to your current skills</strong>. You don't need to learn everything before starting. You <strong>learn what you need when you need it</strong>, by <strong>solving real problems inside your own project</strong>. Game development is too broad to master beforehand.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">
+              <h3>What if my game idea is too ambitious?</h3>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-a">
+              <p>We don't have to throw away your idea. We <strong>break it down and find a realistic version</strong> you can actually build with your current skills. Your original vision can <strong>remain the long-term goal</strong>. The first version is about <strong>proving the core idea, finishing something</strong>, and building the skills you'll need to <strong>tackle something bigger</strong> later.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">
+              <h3>Do I have to finish the entire mentorship?</h3>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-a">
+              <p>No. You <strong>pay one milestone at a time</strong>, so you never have to <strong>commit to the entire program upfront</strong>. If you decide the mentorship isn't for you, <strong>you can stop</strong>.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">
+              <h3>Will you build the game for me?</h3>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-a">
+              <p>No. <strong>You build your game</strong>. I guide you, challenge your decisions, help you understand what you're missing, and teach you how to solve problems yourself. If I have to build your game for you, <strong>you haven't become an independent developer</strong>.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">
+              <h3>What if I've already failed to finish games before?</h3>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-a">
+              <p>That's exactly the problem we're trying to solve. The goal isn't to rely on motivation or simply try harder. We start with a <strong>realistic project</strong>, build it step by step, and teach you how to <strong>handle the problems that normally make you quit</strong>. By the end, you should have experienced <strong>the entire process from planning to publishing</strong>, not another unfinished project.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="section" id="get-started" aria-label="Get started">
+      <div class="wrap">
+        <div class="final-cta">
+          <h2 class="final-cta-title">Ready to Build Your Game?</h2>
+          <p class="final-cta-sub">Turn your idea into a game you can actually finish, publish, and build on your own.</p>
+          <a class="btn btn-lg final-cta-btn" href="#offer">Book My Free Game Planning Session</a>
+          <p class="final-cta-note">Free to start · No commitment · Keep your game plan even if you don't continue</p>
+          <p class="final-cta-price">First 3 students get the founding price of <strong>$99 total</strong>.</p>
         </div>
       </div>
     </section>
@@ -313,6 +393,6 @@ Tailor your game idea to your skills, build it by solving whatever problems come
     </div>
   </footer>
 
-  <script src="main.js?v=25"></script>
+  <script src="main.js?v=31"></script>
 </body>
 </html>

@@ -126,14 +126,6 @@ a { color: inherit; text-decoration: none; }
   font-size: 1rem;
   white-space: nowrap;
 }
-.brand-mark {
-  width: 13px;
-  height: 13px;
-  border-radius: 4px;
-  background: var(--color-accent-2);
-  transform: rotate(45deg);
-  flex-shrink: 0;
-}
 
 .site-nav {
   margin-left: auto;
@@ -559,6 +551,36 @@ a { color: inherit; text-decoration: none; }
   will-change: transform;
 }
 
+/* Spotlight variant — cards scale up as they approach the centre. The extra
+   vertical headroom keeps the enlarged centre card AND its hover glow from
+   being clipped at the marquee's overflow edge (which sits at the next section). */
+.marquee-spotlight {
+  padding: clamp(4rem, 10vw, 7rem) 0;
+  margin: calc(clamp(4rem, 10vw, 7rem) * -1) 0;
+}
+.marquee-spotlight .proof-card {
+  transition: none;
+  will-change: scale;
+}
+/* Showcase marquee: keep the image's natural ratio so nothing gets cropped.
+   No glow by default; heavinest hover glow removed too. The image is padded
+   inward so there's breathing room inside the frame on all corners. */
+#games-marquee .proof-media {
+  aspect-ratio: auto;
+  object-fit: contain;
+  padding: 1.2rem;
+  background: var(--color-surface);
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 10px 24px -18px var(--card-shadow);
+}
+#games-marquee .proof-card::before { opacity: 0; }
+#games-marquee .proof-card.is-hover::before { opacity: .12; }
+#games-marquee .proof-card.is-hover .proof-media {
+  transform: scale(1.06);
+  border-color: var(--border-strong);
+  box-shadow: 0 0 10px var(--glow-accent-2), 0 14px 30px -20px var(--card-shadow);
+}
+
 /* --------------------------------------------------------------------------
    Vertical marquee variant — twin columns scrolling in opposite directions.
    -------------------------------------------------------------------------- */
@@ -932,10 +954,72 @@ body.t-modal-open { overflow: hidden; }
 
 .mini { padding: 1rem; border: 1px solid var(--border-soft); border-radius: 12px; }
 
-.faq-row {
-  padding: 1.2rem;
+.faq-list {
+  display: grid;
+  gap: .9rem;
+}
+
+.faq-item {
   border: 1px solid var(--border-soft);
-  border-radius: 12px;
+  border-radius: 14px;
+  background: var(--color-bg-soft);
+  overflow: hidden;
+  transition: border-color .25s ease;
+}
+.faq-item[open] { border-color: var(--border-strong); }
+
+.faq-q {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  padding: 1.15rem 1.35rem;
+  cursor: pointer;
+}
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.faq-icon {
+  position: relative;
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+}
+.faq-icon::before,
+.faq-icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--color-accent-hover);
+  border-radius: 2px;
+  transition: transform .25s ease;
+}
+.faq-icon::before { width: 13px; height: 2px; }
+.faq-icon::after { width: 2px; height: 13px; }
+.faq-item[open] .faq-icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+
+.faq-a {
+  padding: 0 1.35rem 1.3rem;
+}
+.faq-a p {
+  margin: 0;
+  font-size: .95rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+.faq-a strong {
+  color: var(--color-text);
+  font-weight: 600;
 }
 
 /* ==========================================================================
@@ -1165,7 +1249,7 @@ body.t-modal-open { overflow: hidden; }
 .milestone-price .price-old {
   margin-right: .4rem;
   font-weight: 500;
-  color: var(--color-muted);
+  color: var(--color-accent-hover);
   text-decoration: line-through;
   text-decoration-color: var(--color-muted);
 }
@@ -1188,10 +1272,6 @@ body.t-modal-open { overflow: hidden; }
   font-size: .88rem;
   line-height: 1.5;
   color: var(--color-muted);
-}
-.milestone-desc strong {
-  color: var(--color-text);
-  font-weight: 600;
 }
 
 .offer-pay-note {
@@ -1235,6 +1315,61 @@ body.t-modal-open { overflow: hidden; }
 
 @media (max-width: 400px) {
   .milestones { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ==========================================================================
+   Final CTA
+   ========================================================================== */
+.final-cta {
+  position: relative;
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 3.5rem);
+  text-align: center;
+  border: 1px solid var(--border-soft);
+  border-radius: calc(var(--radius) + 8px);
+  background:
+    radial-gradient(90% 120% at 50% 0%, var(--glow-accent-2), transparent 60%),
+    var(--color-bg-soft);
+}
+
+.final-cta-title {
+  font-size: clamp(1.8rem, 3.2vw + .5rem, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.final-cta-sub {
+  margin: .9rem auto 0;
+  max-width: 48ch;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--color-muted);
+}
+.final-cta-sub strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.final-cta-btn {
+  margin-top: clamp(1.8rem, 4vh, 2.6rem);
+  font-size: 1.1rem;
+}
+
+.final-cta-note {
+  margin: 1.5rem 0 0;
+  font-size: .9rem;
+  color: var(--color-muted);
+}
+
+.final-cta-price {
+  margin: .6rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--color-muted);
+}
+.final-cta-price strong {
+  color: var(--color-accent-hover);
+  font-weight: 700;
 }
 
 /* ==========================================================================
