@@ -1249,18 +1249,3 @@ var PILLAR_ITEMS = [
 /* ==========================================================================
    FAQ accordion — opening one question closes the others
    ========================================================================== */
-(function () {
-  'use strict';
-
-  var items = document.querySelectorAll('.faq-item');
-  if (!items.length) return;
-
-  items.forEach(function (item) {
-    item.addEventListener('toggle', function () {
-      if (!item.open) return;
-      document.querySelectorAll('.faq-item[open]').forEach(function (other) {
-        if (other !== item) other.open = false;
-      });
-    });
-  });
-})();
