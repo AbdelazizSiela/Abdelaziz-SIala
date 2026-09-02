@@ -768,7 +768,7 @@ initMarquee({
   spotlight: true,
   tooltip: 'Click to verify',
   items: [
-    { title: '25+ Games Built', desc: 'Across a wide range of genres and platforms', link: 'https://sites.google.com/view/abdelazizsiala' },
+    { title: '25+ Games Built', desc: 'Across a wide range of genres and platforms', link: 'portfolio.html' },
     { title: '2 Games Shipped on Steam', desc: 'Put two finished games in front of millions of players on Steam', link: 'https://store.steampowered.com/developer/suronix/' },
     { title: 'Game Dev Club Leader', desc: 'Led and taught aspiring game developers through Nexus IT Club at my university', link: 'https://www.instagram.com/p/DWpIU0KCGb3/' },
     { title: 'Competed In Many Game Jams', desc: 'Placed 1st and 2nd in two of them', link: 'https://www.facebook.com/photo?fbid=122127498578256971&set=pcb.122127499154256971' },

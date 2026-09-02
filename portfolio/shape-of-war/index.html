@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0B0B0B">
+  <meta name="description" content="Shape Of War - Projects For Fun by Abdelaziz Siala.">
+  <title>Shape Of War - Portfolio · Abdelaziz Siala</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../colors.css?v=35">
+  <link rel="stylesheet" href="../../portfolio.css?v=1">
+</head>
+
+<body id="top">
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="../../index.html" aria-label="Abdelaziz Siala - home">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span class="brand-name">Abdelaziz Siala</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Site navigation">
+        <a href="../../index.html">Mentorship</a>
+        <a href="../../portfolio.html">Portfolio</a>
+      </nav>
+
+      <a class="btn btn-sm header-cta" href="mailto:siela.aziz@gmail.com">Work With Me</a>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="pd-hero" aria-label="Shape Of War">
+      <div class="wrap pd-hero-inner">
+        <nav class="pd-breadcrumb" aria-label="Breadcrumb">
+          <a href="../../portfolio.html#projects">Portfolio</a>
+          <span>&rarr;</span>
+          <span>Shape Of War</span>
+        </nav>
+
+        <span class="pd-category">Projects For Fun</span>
+        <h1>Shape Of War</h1>
+        <div class="pd-desc">
+          <p>A multiplayer, turn-based strategy game with chess-like elements. Your objective is to eliminate your opponent's units by thoughtful planning and precise execution. Plan your attacks, maneuver strategically, and capture castles to gain tactical advantages.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="pd-gallery" aria-label="Media">
+      <div class="wrap">
+        <h2>Photos</h2>
+          <div class="pd-shot-grid">
+            <img class="pd-shot" src="images/portfolio/shape-of-war/shot_1.png" alt="Shape Of War screenshot 1" loading="lazy">
+            <img class="pd-shot" src="images/portfolio/shape-of-war/shot_2.png" alt="Shape Of War screenshot 2" loading="lazy">
+            <img class="pd-shot" src="images/portfolio/shape-of-war/shot_3.png" alt="Shape Of War screenshot 3" loading="lazy">
+          </div>
+      </div>
+    </section>
+
+    <section class="pd-links" aria-label="Links">
+      <div class="wrap">
+        <h2>Links</h2>
+        <p style="color:var(--color-muted);">No external links available for this project.</p>
+      </div>
+    </section>
+
+    <section class="pd-cta" aria-label="Back to portfolio">
+      <div class="wrap">
+        <h2>Want to see more?</h2>
+        <p>Explore the rest of the portfolio or check out my mentorship offer.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:.8rem; justify-content:center;">
+          <a class="btn btn-lg" href="../../portfolio.html#projects">Back to Portfolio</a>
+          <a class="btn btn-sm" href="../../index.html">View Mentorship</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p>&copy; 2026 Abdelaziz Siala · <a href="mailto:siela.aziz@gmail.com">siela.aziz@gmail.com</a></p>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="../../portfolio.html">Portfolio</a>
+        <a href="https://github.com/AbdelazizSiela" target="_blank" rel="noopener">GitHub</a>
+        <a href="mailto:siela.aziz@gmail.com">Email</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var SVG = function (label) {
+        var encoded = label;
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">' +
+          '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+          '<stop offset="0" stop-color="#151515"/><stop offset="1" stop-color="#0B0B0B"/>' +
+          '</linearGradient></defs>' +
+          '<rect width="640" height="360" fill="url(#g)"/>' +
+          '<circle cx="320" cy="165" r="60" fill="none" stroke="#8B5CF6" stroke-opacity="0.35" stroke-width="2"/>' +
+          '<circle cx="320" cy="165" r="90" fill="none" stroke="#8B5CF6" stroke-opacity="0.18" stroke-width="2"/>' +
+          '<circle cx="320" cy="165" r="40" fill="#8B5CF6" fill-opacity="0.12"/>' +
+          '<text x="320" y="282" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#9A9A9A">' + encoded + '</text>' +
+          '<text x="320" y="312" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#6b6b6b">screenshot coming soon</text>' +
+          '</svg>');
+      };
+      document.querySelectorAll('img').forEach(function (img) {
+        img.addEventListener('error', function () {
+          var fallback = SVG(this.alt || 'Project');
+          if (this.src !== fallback) this.src = fallback;
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>
