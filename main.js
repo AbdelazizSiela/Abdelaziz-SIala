@@ -126,7 +126,7 @@
 
 /* ==========================================================================
    Hero image carousel + lightbox.
-   Slides are picked up automatically from the images/hero/ folder by probing
+   Slides are picked up automatically from the images/mentorship/hero/ folder by probing
    hero_1.png, hero_2.png, hero_3.png ... until a file is missing. Just drop
    hero_N.png into the folder (sequential names) and reload.
    Fade between slides; prev/next arrows + dot indicators (built per slide).
@@ -154,7 +154,7 @@
   var lightboxPrev = lightbox.querySelector('.lightbox-prev');
   var lightboxNext = lightbox.querySelector('.lightbox-next');
 
-  var PROBE_BASE = 'images/hero/hero_';
+  var PROBE_BASE = 'images/mentorship/hero/hero_';
   var AUTO_MS = 5000;
   var MAX_SLIDES = 50;
 
@@ -764,7 +764,7 @@ function initMarquee(config) {
 initMarquee({
   marqueeId: 'social-marquee',
   trackId: 'social-marquee-track',
-  imgBase: 'images/social proof/proof_',
+  imgBase: 'images/mentorship/social-proof/proof_',
   spotlight: true,
   tooltip: 'Click to verify',
   items: [
@@ -786,9 +786,9 @@ initMarquee({
   showText: false,
   tooltip: 'Click to verify',
   items: [
-    { img: 'images/showcase/showcase_1.png', link: 'https://www.upwork.com/freelancers/~012da270323100a2e9?mp_source=share' },
-    { img: 'images/showcase/showcase_2.png', link: 'https://www.upwork.com/freelancers/~012da270323100a2e9?mp_source=share' },
-    { img: 'images/showcase/showcase_3.png', link: 'https://www.upwork.com/freelancers/~012da270323100a2e9?mp_source=share' }
+    { img: 'images/mentorship/showcase/showcase_1.png', link: 'https://www.upwork.com/freelancers/~012da270323100a2e9?mp_source=share' },
+    { img: 'images/mentorship/showcase/showcase_2.png', link: 'https://www.upwork.com/freelancers/~012da270323100a2e9?mp_source=share' },
+    { img: 'images/mentorship/showcase/showcase_3.png', link: 'https://www.upwork.com/freelancers/~012da270323100a2e9?mp_source=share' }
   ]
 });
 /* Clicking a testimonial image opens this popup. It scales up out of the
@@ -1072,85 +1072,85 @@ var testimonialLightbox = (function () {
      media    — OPTIONAL array for the popup carousel, e.g.:
                   media: [
                     { type: 'video', src: 'videos/review_1.mp4' },
-                    { type: 'image', src: 'images/testimonials/shot_1a.png' }
+                    { type: 'image', src: 'images/proof/shot_1a.png' }
                   ]
      video    — shortcut: single video (replaces showcase)
      showcase — shortcut: single project image
      link     — where "View Original Review" goes                                */
 var TESTIMONIAL_ITEMS = [
-  { img: 'images/testimonials/poppies/thumb.png',
+  { img: 'images/proof/poppies/thumb.png',
     title: 'Poppies - A platformer rage game',
-    detail: 'images/testimonials/poppies/review.png',
+    detail: 'images/proof/poppies/review.png',
     media: [
       { type: 'video', src: 'videos/poppies/review.mp4' },
-      { type: 'image', src: 'images/testimonials/poppies/shot_1.png' },
-      { type: 'image', src: 'images/testimonials/poppies/shot_2.png' },
-      { type: 'image', src: 'images/testimonials/poppies/shot_3.png' },
-      { type: 'image', src: 'images/testimonials/poppies/shot_4.png' },
-      { type: 'image', src: 'images/testimonials/poppies/shot_5.png' }
+      { type: 'image', src: 'images/proof/poppies/shot_1.png' },
+      { type: 'image', src: 'images/proof/poppies/shot_2.png' },
+      { type: 'image', src: 'images/proof/poppies/shot_3.png' },
+      { type: 'image', src: 'images/proof/poppies/shot_4.png' },
+      { type: 'image', src: 'images/proof/poppies/shot_5.png' }
     ],
     link: 'http://www.fiverr.com/abdelazizsiela' },
-  { img: 'images/testimonials/secure-networking/thumb.png',
+  { img: 'images/proof/secure-networking/thumb.png',
     title: 'Secure Networking Journey - A web-based interactive game',
-    detail: 'images/testimonials/secure-networking/review.png',
+    detail: 'images/proof/secure-networking/review.png',
     media: [
       { type: 'video', src: 'videos/secure-networking/review.mp4' },
-      { type: 'image', src: 'images/testimonials/secure-networking/shot_1.png' },
-      { type: 'image', src: 'images/testimonials/secure-networking/shot_2.png' },
-      { type: 'image', src: 'images/testimonials/secure-networking/shot_3.png' },
-      { type: 'image', src: 'images/testimonials/secure-networking/shot_4.png' },
-      { type: 'image', src: 'images/testimonials/secure-networking/shot_5.png' }
+      { type: 'image', src: 'images/proof/secure-networking/shot_1.png' },
+      { type: 'image', src: 'images/proof/secure-networking/shot_2.png' },
+      { type: 'image', src: 'images/proof/secure-networking/shot_3.png' },
+      { type: 'image', src: 'images/proof/secure-networking/shot_4.png' },
+      { type: 'image', src: 'images/proof/secure-networking/shot_5.png' }
     ],
     link: 'https://www.freelancer.com/u/AbdelazizSiela?review_context_id=39591423&review_type=project&frm=AbdelazizSiela&sb=t' },
-  { img: 'images/testimonials/parrot-flip/thumb.png',
+  { img: 'images/proof/parrot-flip/thumb.png',
     title: 'Parrot Flip - Flappy Bird Style Game for Telegram',
-    detail: 'images/testimonials/parrot-flip/review.png',
+    detail: 'images/proof/parrot-flip/review.png',
     media: [
       { type: 'video', src: 'videos/parrot-flip/review.mp4' },
-      { type: 'image', src: 'images/testimonials/parrot-flip/shot_1.png' },
-      { type: 'image', src: 'images/testimonials/parrot-flip/shot_2.png' },
-      { type: 'image', src: 'images/testimonials/parrot-flip/shot_3.png' },
-      { type: 'image', src: 'images/testimonials/parrot-flip/shot_4.png' }
+      { type: 'image', src: 'images/proof/parrot-flip/shot_1.png' },
+      { type: 'image', src: 'images/proof/parrot-flip/shot_2.png' },
+      { type: 'image', src: 'images/proof/parrot-flip/shot_3.png' },
+      { type: 'image', src: 'images/proof/parrot-flip/shot_4.png' }
     ],
     link: 'https://www.upwork.com/freelancers/~012da270323100a2e9?mp_source=share' },
-  { img: 'images/testimonials/attack-on-monsters/thumb.png',
+  { img: 'images/proof/attack-on-monsters/thumb.png',
     title: 'Attack On Monsters - An endless runner game',
-    detail: 'images/testimonials/attack-on-monsters/review.png',
+    detail: 'images/proof/attack-on-monsters/review.png',
     media: [
       { type: 'video', src: 'videos/attack-on-monsters/review.mp4' },
-      { type: 'image', src: 'images/testimonials/attack-on-monsters/shot_1.png' }
+      { type: 'image', src: 'images/proof/attack-on-monsters/shot_1.png' }
     ],
     link: 'http://www.fiverr.com/abdelazizsiela' },
-  { img: 'images/testimonials/gekoly-runner/thumb.png',
+  { img: 'images/proof/gekoly-runner/thumb.png',
     title: 'Gekoly Runner - An endless runner mobile game',
-    detail: 'images/testimonials/gekoly-runner/review.png',
+    detail: 'images/proof/gekoly-runner/review.png',
     media: [
       { type: 'video', src: 'videos/gekoly-runner/review.mp4' },
-      { type: 'image', src: 'images/testimonials/gekoly-runner/shot_1.png' }
+      { type: 'image', src: 'images/proof/gekoly-runner/shot_1.png' }
     ],
     link: 'http://www.fiverr.com/abdelazizsiela' },
-  { img: 'images/testimonials/planes-attack/thumb.png',
+  { img: 'images/proof/planes-attack/thumb.png',
     title: 'Planes Attack - An endless shooter game',
-    detail: 'images/testimonials/planes-attack/review.png',
+    detail: 'images/proof/planes-attack/review.png',
     media: [
       { type: 'video', src: 'videos/planes-attack/review.mp4' },
-      { type: 'image', src: 'images/testimonials/planes-attack/shot_1.png' }
+      { type: 'image', src: 'images/proof/planes-attack/shot_1.png' }
     ],
     link: 'http://www.fiverr.com/abdelazizsiela' },
-  { img: 'images/testimonials/steps/thumb.png',
+  { img: 'images/proof/steps/thumb.png',
     title: 'Steps - A puzzle game',
-    detail: 'images/testimonials/steps/review.png',
+    detail: 'images/proof/steps/review.png',
     media: [
       { type: 'video', src: 'videos/steps/review.mp4' },
-      { type: 'image', src: 'images/testimonials/steps/shot_1.png' }
+      { type: 'image', src: 'images/proof/steps/shot_1.png' }
     ],
     link: 'http://www.fiverr.com/abdelazizsiela' },
-  { img: 'images/testimonials/end-of-civilization/thumb.png',
+  { img: 'images/proof/end-of-civilization/thumb.png',
     title: 'End Of Civilization - A First-Person-Shooter game',
-    detail: 'images/testimonials/end-of-civilization/review.png',
+    detail: 'images/proof/end-of-civilization/review.png',
     media: [
       { type: 'video', src: 'videos/end-of-civilization/review.mp4' },
-      { type: 'image', src: 'images/testimonials/end-of-civilization/shot_1.png' }
+      { type: 'image', src: 'images/proof/end-of-civilization/shot_1.png' }
     ],
     link: 'http://www.fiverr.com/abdelazizsiela' }
 ];
@@ -1158,7 +1158,7 @@ var TESTIMONIAL_ITEMS = [
 initMarquee({
   marqueeId: 'testimonials-marquee-a',
   trackId: 'testimonials-marquee-track-a',
-  imgBase: 'images/testimonials/testimonial_',
+  imgBase: 'images/proof/testimonial_',
   tooltip: 'Click to verify',
   axis: 'y',
   showText: false, // image-only cards
@@ -1169,7 +1169,7 @@ initMarquee({
 initMarquee({
   marqueeId: 'testimonials-marquee-b',
   trackId: 'testimonials-marquee-track-b',
-  imgBase: 'images/testimonials/testimonial_',
+  imgBase: 'images/proof/testimonial_',
   tooltip: 'Click to verify',
   axis: 'y',
   reverse: true,
@@ -1180,7 +1180,7 @@ initMarquee({
 
 /* ==========================================================================
    How it works — four pillars.
-   Cards load automatically from images/pillars/pillar_1.png ...
+   Cards load automatically from images/mentorship/pillars/pillar_1.png ...
    pillar_4.png (sequential names — just drop files in and reload).
    Edit the titles & short descriptions below (one per pillar).
    ========================================================================== */
@@ -1191,7 +1191,7 @@ initMarquee({
   var container = document.getElementById('pillars');
   if (!container) return;
 
-  var PROBE_BASE = 'images/pillars/pillar_';
+  var PROBE_BASE = 'images/mentorship/pillars/pillar_';
   var MAX_PILLARS = 8;
   var pillarCards = [];
 

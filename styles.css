@@ -1433,6 +1433,12 @@ body.t-modal-open { overflow: hidden; }
 .site-footer a.footer-link:hover {
   color: var(--color-text);
 }
+.site-footer .footer-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+.site-footer .footer-nav a { color: var(--color-muted); transition: color .15s ease; }
+.site-footer .footer-nav a:hover { color: var(--color-text); }
 
 /* ==========================================================================
    Reduced motion — show first phrase statically, no travelling
