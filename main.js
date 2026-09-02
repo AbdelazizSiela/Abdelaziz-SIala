@@ -1206,6 +1206,7 @@ var PILLAR_ITEMS = [
 
     var card = document.createElement('figure');
     card.className = 'pillar';
+    card.style.setProperty('--glow', 0.2 + 0.12 * n);
 
     var img = document.createElement('img');
     img.className = 'pillar-media';
