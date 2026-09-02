@@ -1193,6 +1193,7 @@ initMarquee({
 
   var PROBE_BASE = 'images/pillars/pillar_';
   var MAX_PILLARS = 8;
+  var pillarCards = [];
 
 var PILLAR_ITEMS = [
     { title: 'Know What to Build', desc: 'Turn your idea into a <strong>clear, realistic game</strong> that fits your skills, instead of trying to build everything at once' },
@@ -1205,8 +1206,9 @@ var PILLAR_ITEMS = [
     var item = PILLAR_ITEMS[n - 1] || {};
 
     var card = document.createElement('figure');
-    card.className = 'pillar';
+    card.className = 'pillar pillar-reveal';
     card.style.setProperty('--glow', 0.2 + 0.12 * n);
+    card.style.setProperty('--reveal-delay', ((n - 1) * 0.07) + 's');
 
     var img = document.createElement('img');
     img.className = 'pillar-media';
@@ -1231,16 +1233,44 @@ var PILLAR_ITEMS = [
     card.appendChild(img);
     card.appendChild(caption);
     container.appendChild(card);
+    pillarCards.push(card);
+  }
+
+  function setupReveal() {
+    var observed = false;
+    var reveal = function () {
+      if (observed) return;
+      observed = true;
+      pillarCards.forEach(function (card) {
+        var delay = parseFloat(card.style.getPropertyValue('--reveal-delay') || '0');
+        window.setTimeout(function () {
+          card.classList.add('is-revealed');
+        }, delay * 1000);
+      });
+    };
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            reveal();
+            io.disconnect();
+          }
+        });
+      }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
+      io.observe(container);
+    } else {
+      reveal();
+    }
   }
 
   function probe(n) {
-    if (n > MAX_PILLARS) return;
+    if (n > MAX_PILLARS) { setupReveal(); return; }
     var img = new Image();
     img.onload = function () {
       addPillar(PROBE_BASE + n + '.png', n);
       probe(n + 1);
     };
-    img.onerror = function () { /* sequential names: stop at first gap */ };
+    img.onerror = function () { setupReveal(); };
     img.src = PROBE_BASE + n + '.png';
   }
 
