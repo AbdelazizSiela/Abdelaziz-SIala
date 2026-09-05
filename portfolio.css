@@ -631,14 +631,20 @@ p { margin: 0; }
 .pd-shot-hero.is-ph { padding: 2rem; }
 
 .pd-shot-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(560px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  align-items: start;
   gap: 1.4rem;
   margin-top: 1.6rem;
 }
+/* Non-16:9 (portrait) screenshot grids pack shots smaller so they sit side by side */
+.pd-shot-grid.is-compact .pd-shot {
+  width: 240px;
+}
 .pd-shot {
-  width: 100%;
+  width: 560px;
+  max-width: 100%;
   display: block;
   transform: scale(1);
   will-change: transform;
