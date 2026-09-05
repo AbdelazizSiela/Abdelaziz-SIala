@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="colors.css?v=35">
-  <link rel="stylesheet" href="portfolio.css?v=18">
+  <link rel="stylesheet" href="portfolio.css?v=21">
 </head>
 
 <body id="top">
@@ -110,6 +110,24 @@
           <h2 class="section-title">Portfolio</h2>
         </div>
 
+        <!-- ---- Genre filter + group-by sorter ---- -->
+        <div class="sort-bar">
+          <div class="sort-group">
+            <span class="sort-label" id="genre-filter-label">Filter by genre</span>
+            <div class="genre-chips" id="genre-chips" role="group" aria-labelledby="genre-filter-label"></div>
+          </div>
+
+          <div class="sort-group sort-group-toggle">
+            <span class="sort-label" id="group-by-label">Group by</span>
+            <div class="sort-toggle" id="sort-toggle" role="group" aria-labelledby="group-by-label">
+              <button type="button" class="sort-toggle-btn is-active" data-groupby="collections" aria-pressed="true">Collections</button>
+              <button type="button" class="sort-toggle-btn" data-groupby="genre" aria-pressed="false">Genre</button>
+            </div>
+          </div>
+
+          <p class="sort-status" id="sort-status" aria-live="polite"></p>
+        </div>
+
         <!-- ---- Big Projects (Suronix) ---- -->
         <div class="category" id="big-projects">
           <div class="category-head">
@@ -117,7 +135,7 @@
             <p class="category-note">Developed by my indie team Suronix (previously Bigaboom)</p>
           </div>
           <div class="project-grid">
-            <a class="pcard" href="portfolio/oops-unit/" data-slug="oops-unit">
+            <a class="pcard" href="portfolio/oops-unit/" data-slug="oops-unit" data-genres="co-op multiplayer puzzle">
               <div class="pcard-media"><img src="images/portfolio/oops-unit/thumb.png" alt="Oops Unit" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Oops Unit</h3>
@@ -126,7 +144,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/riot-ride/" data-slug="riot-ride">
+            <a class="pcard" href="portfolio/riot-ride/" data-slug="riot-ride" data-genres="combat roguelike">
               <div class="pcard-media"><img src="images/portfolio/riot-ride/thumb.png" alt="Riot Ride" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Riot Ride</h3>
@@ -135,7 +153,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/kadwin/" data-slug="kadwin">
+            <a class="pcard" href="portfolio/kadwin/" data-slug="kadwin" data-genres="multiplayer shooter">
               <div class="pcard-media"><img src="images/portfolio/kadwin/thumb.png" alt="Kadwin" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Kadwin</h3>
@@ -156,7 +174,7 @@
             <div class="marquee-track" id="review-marquee-track"></div>
           </div>
           <div class="project-grid">
-            <a class="pcard" href="portfolio/poppies/" data-slug="poppies">
+            <a class="pcard" href="portfolio/poppies/" data-slug="poppies" data-genres="platformer">
               <div class="pcard-media"><img src="images/portfolio/poppies/thumb.png" alt="Poppies" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Poppies</h3>
@@ -165,7 +183,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/secure-networking-journey/" data-slug="secure-networking-journey">
+            <a class="pcard" href="portfolio/secure-networking-journey/" data-slug="secure-networking-journey" data-genres="web">
               <div class="pcard-media"><img src="images/portfolio/secure-networking-journey/thumb.png" alt="Secure Networking Journey" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Secure Networking Journey</h3>
@@ -174,7 +192,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/parrot-flip/" data-slug="parrot-flip">
+            <a class="pcard" href="portfolio/parrot-flip/" data-slug="parrot-flip" data-genres="arcade casual">
               <div class="pcard-media"><img src="images/portfolio/parrot-flip/thumb.png" alt="Parrot Flip" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Parrot Flip</h3>
@@ -183,7 +201,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/build-your-empire/" data-slug="build-your-empire">
+            <a class="pcard" href="portfolio/build-your-empire/" data-slug="build-your-empire" data-genres="adventure">
               <div class="pcard-media"><img src="images/portfolio/build-your-empire/thumb.png" alt="Build Your Empire" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Build Your Empire</h3>
@@ -192,7 +210,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/falling-heroes/" data-slug="falling-heroes">
+            <a class="pcard" href="portfolio/falling-heroes/" data-slug="falling-heroes" data-genres="endless-runner hypercasual mobile">
               <div class="pcard-media"><img src="images/portfolio/falling-heroes/thumb.png" alt="Falling Heroes" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Falling Heroes</h3>
@@ -201,7 +219,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/attack-on-monsters/" data-slug="attack-on-monsters">
+            <a class="pcard" href="portfolio/attack-on-monsters/" data-slug="attack-on-monsters" data-genres="endless-runner combat">
               <div class="pcard-media"><img src="images/portfolio/attack-on-monsters/thumb.png" alt="Attack On Monsters" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Attack On Monsters</h3>
@@ -210,7 +228,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/gekoly-runner/" data-slug="gekoly-runner">
+            <a class="pcard" href="portfolio/gekoly-runner/" data-slug="gekoly-runner" data-genres="endless-runner mobile">
               <div class="pcard-media"><img src="images/portfolio/gekoly-runner/thumb.png" alt="Gekoly Runner" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Gekoly Runner</h3>
@@ -219,7 +237,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/planes-attack/" data-slug="planes-attack">
+            <a class="pcard" href="portfolio/planes-attack/" data-slug="planes-attack" data-genres="arcade shooter">
               <div class="pcard-media"><img src="images/portfolio/planes-attack/thumb.png" alt="Planes Attack" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Planes Attack</h3>
@@ -228,7 +246,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/steps/" data-slug="steps">
+            <a class="pcard" href="portfolio/steps/" data-slug="steps" data-genres="2d puzzle">
               <div class="pcard-media"><img src="images/portfolio/steps/thumb.png" alt="Steps" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Steps</h3>
@@ -237,7 +255,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/end-of-civilization/" data-slug="end-of-civilization">
+            <a class="pcard" href="portfolio/end-of-civilization/" data-slug="end-of-civilization" data-genres="fps shooter">
               <div class="pcard-media"><img src="images/portfolio/end-of-civilization/thumb.png" alt="End Of Civilization" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">End Of Civilization</h3>
@@ -246,7 +264,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/untitled-octopus-game/" data-slug="untitled-octopus-game">
+            <a class="pcard" href="portfolio/untitled-octopus-game/" data-slug="untitled-octopus-game" data-genres="endless-runner">
               <div class="pcard-media"><img src="images/portfolio/untitled-octopus-game/thumb.png" alt="Untitled Octopus Game" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Untitled Octopus Game</h3>
@@ -264,7 +282,7 @@
             <p class="category-note">Never released or finished — prototypes and experiments</p>
           </div>
           <div class="project-grid">
-            <a class="pcard" href="portfolio/domination/" data-slug="domination">
+            <a class="pcard" href="portfolio/domination/" data-slug="domination" data-genres="strategy turn-based">
               <div class="pcard-media"><img src="images/portfolio/domination/thumb.png" alt="Domination" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Domination</h3>
@@ -273,7 +291,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/shattered-dreams/" data-slug="shattered-dreams">
+            <a class="pcard" href="portfolio/shattered-dreams/" data-slug="shattered-dreams" data-genres="narrative">
               <div class="pcard-media"><img src="images/portfolio/shattered-dreams/thumb.png" alt="Shattered Dreams" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Shattered Dreams</h3>
@@ -282,7 +300,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/block-top/" data-slug="block-top">
+            <a class="pcard" href="portfolio/block-top/" data-slug="block-top" data-genres="arcade casual">
               <div class="pcard-media"><img src="images/portfolio/block-top/thumb.png" alt="Block Top" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Block Top</h3>
@@ -291,7 +309,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/inspector-dave/" data-slug="inspector-dave">
+            <a class="pcard" href="portfolio/inspector-dave/" data-slug="inspector-dave" data-genres="puzzle">
               <div class="pcard-media"><img src="images/portfolio/inspector-dave/thumb.png" alt="Inspector Dave" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Inspector Dave</h3>
@@ -309,7 +327,7 @@
             <p class="category-note">Made just for fun</p>
           </div>
           <div class="project-grid">
-            <a class="pcard" href="portfolio/simon-says/" data-slug="simon-says">
+            <a class="pcard" href="portfolio/simon-says/" data-slug="simon-says" data-genres="multiplayer party">
               <div class="pcard-media"><img src="images/portfolio/simon-says/thumb.png" alt="Simon Says" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Simon Says</h3>
@@ -318,7 +336,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/shape-of-war/" data-slug="shape-of-war">
+            <a class="pcard" href="portfolio/shape-of-war/" data-slug="shape-of-war" data-genres="multiplayer strategy turn-based">
               <div class="pcard-media"><img src="images/portfolio/shape-of-war/thumb.png" alt="Shape Of War" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Shape Of War</h3>
@@ -327,7 +345,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/knightmare-quest/" data-slug="knightmare-quest">
+            <a class="pcard" href="portfolio/knightmare-quest/" data-slug="knightmare-quest" data-genres="2d top-down roguelite combat">
               <div class="pcard-media"><img src="images/portfolio/knightmare-quest/thumb.png" alt="Knightmare Quest" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Knightmare Quest</h3>
@@ -345,7 +363,7 @@
             <p class="category-note">Made for game jams &amp; hackathons</p>
           </div>
           <div class="project-grid">
-            <a class="pcard" href="portfolio/skinvest/" data-slug="skinvest">
+            <a class="pcard" href="portfolio/skinvest/" data-slug="skinvest" data-genres="simulation">
               <div class="pcard-media"><img src="images/portfolio/skinvest/thumb.png" alt="Skinvest" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Skinvest</h3>
@@ -354,7 +372,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/into-light/" data-slug="into-light">
+            <a class="pcard" href="portfolio/into-light/" data-slug="into-light" data-genres="simulation narrative">
               <div class="pcard-media"><img src="images/portfolio/into-light/thumb.png" alt="Into Light" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Into Light</h3>
@@ -363,7 +381,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/ignis/" data-slug="ignis">
+            <a class="pcard" href="portfolio/ignis/" data-slug="ignis" data-genres="adventure combat">
               <div class="pcard-media"><img src="images/portfolio/ignis/thumb.png" alt="Ignis" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Ignis</h3>
@@ -372,7 +390,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/captain-freezy/" data-slug="captain-freezy">
+            <a class="pcard" href="portfolio/captain-freezy/" data-slug="captain-freezy" data-genres="2d combat">
               <div class="pcard-media"><img src="images/portfolio/captain-freezy/thumb.png" alt="Captain Freezy" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Captain Freezy</h3>
@@ -390,7 +408,7 @@
             <p class="category-note">Made when I was a beginner</p>
           </div>
           <div class="project-grid">
-            <a class="pcard" href="portfolio/funky-worm/" data-slug="funky-worm">
+            <a class="pcard" href="portfolio/funky-worm/" data-slug="funky-worm" data-genres="endless-runner">
               <div class="pcard-media"><img src="images/portfolio/funky-worm/thumb.png" alt="Funky Worm" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Funky Worm</h3>
@@ -399,7 +417,7 @@
               </div>
             </a>
 
-            <a class="pcard" href="portfolio/cube-rush/" data-slug="cube-rush">
+            <a class="pcard" href="portfolio/cube-rush/" data-slug="cube-rush" data-genres="endless-runner">
               <div class="pcard-media"><img src="images/portfolio/cube-rush/thumb.png" alt="Cube Rush" loading="lazy"></div>
               <div class="pcard-body">
                 <h3 class="pcard-title">Cube Rush</h3>
@@ -409,6 +427,10 @@
             </a>
           </div>
         </div>
+
+        <!-- ---- Genre-grouped view (populated by portfolio-sorter.js) ---- -->
+        <div id="genre-view" class="genre-view" aria-live="polite"></div>
+        <p class="sort-empty" id="sort-no-results">No projects match this genre.</p>
 
       </div>
     </section>
@@ -427,6 +449,7 @@
   </footer>
 
   <script src="main.js?v=35"></script>
+  <script src="portfolio-sorter.js?v=2"></script>
 
   <script>
     /* Branded placeholder fallback: if a project screenshot hasn't been

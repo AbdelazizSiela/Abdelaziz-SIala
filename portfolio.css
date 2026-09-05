@@ -141,24 +141,6 @@ p { margin: 0; }
 .site-nav a:hover { color: var(--color-text); }
 .site-nav .is-active { color: var(--color-text); }
 
-@media (max-width: 820px) {
-  .site-nav { gap: 1rem; }
-  .header-cta { display: none; }
-  .pf-hero-inner { grid-template-columns: 1fr; }
-  .pf-hero-visual {
-    justify-content: center;
-    width: 100%;
-    order: -1;
-    padding: 0 0 1rem;
-  }
-  .pf-visual-glow { right: 50%; transform: translate(50%, -50%); }
-  .pf-visual-frame { width: min(78vw, 360px); }
-  .pf-visual-frame img {
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%);
-            mask-image: linear-gradient(to bottom, transparent 0%, #000 22%);
-  }
-}
-
 /* ==========================================================================
    Portfolio landing — hero
    ========================================================================== */
@@ -277,6 +259,27 @@ p { margin: 0; }
   flex-wrap: wrap;
   gap: .8rem;
   margin-top: 2rem;
+}
+
+/* ==========================================================================
+   Hero — small screens: text first, portrait becomes a smaller framed image
+   below it (kept AFTER the base hero rules so it wins the cascade)
+   ========================================================================== */
+@media (max-width: 820px) {
+  .site-nav { gap: 1rem; }
+  .header-cta { display: none; }
+  .pf-hero-inner { grid-template-columns: 1fr; }
+  .pf-hero-visual {
+    justify-content: center;
+    width: 100%;
+    padding: 0;
+  }
+  .pf-visual-glow { right: 50%; transform: translate(50%, -50%); }
+  .pf-visual-frame { width: min(56vw, 260px); }
+  .pf-visual-frame img {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%);
+            mask-image: linear-gradient(to bottom, transparent 0%, #000 22%);
+  }
 }
 
 /* ==========================================================================
@@ -400,6 +403,120 @@ p { margin: 0; }
   display: inline-flex;
   align-items: center;
   gap: .4rem;
+}
+
+/* ==========================================================================
+   Portfolio sorter — genre filter chips + group-by toggle
+   ========================================================================== */
+.sort-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  margin-bottom: 2.8rem;
+  padding: 1.25rem 1.3rem 1.35rem;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  background: var(--gradient-card);
+}
+
+.sort-group { display: flex; flex-direction: column; gap: .6rem; }
+
+.sort-label {
+  font-family: var(--font-display);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.genre-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.genre-chip {
+  font-family: var(--font-display);
+  font-size: .85rem;
+  font-weight: 600;
+  padding: .42rem .95rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  color: var(--color-muted);
+  background: transparent;
+  cursor: pointer;
+  transition: color .15s ease, border-color .15s ease, background .15s ease, transform .15s ease;
+}
+.genre-chip:hover {
+  color: var(--color-text);
+  border-color: var(--glow-accent);
+  transform: translateY(-1px);
+}
+.genre-chip.is-active {
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.sort-toggle {
+  display: inline-flex;
+  width: max-content;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.sort-toggle-btn {
+  font-family: var(--font-display);
+  font-size: .85rem;
+  font-weight: 600;
+  padding: .45rem 1.15rem;
+  color: var(--color-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color .15s ease, background .15s ease;
+}
+.sort-toggle-btn + .sort-toggle-btn { border-left: 1px solid var(--border-strong); }
+.sort-toggle-btn.is-active {
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+}
+.sort-toggle-btn.is-active + .sort-toggle-btn { border-left-color: var(--color-accent); }
+
+.sort-status {
+  margin: 0;
+  font-size: .88rem;
+  color: var(--color-muted);
+}
+
+/* Filtered-out states (collections view) */
+.category.is-filtered-out { display: none; }
+.pcard.is-filtered-out { display: none; }
+#review-marquee.is-filtered-out { display: none; }
+
+/* Genre-grouped view */
+.genre-view { display: none; }
+.genre-view.is-active { display: block; }
+.genre-view .genre-group { margin-top: 1.4rem; }
+
+.sort-empty {
+  display: none;
+  text-align: center;
+  padding: 3rem 0;
+  font-size: 1rem;
+  color: var(--color-muted);
+}
+.sort-empty.is-visible { display: block; }
+
+@media (min-width: 900px) {
+  .sort-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.15rem 2.5rem;
+    align-items: end;
+  }
+  .sort-status { grid-column: 1 / -1; }
 }
 
 /* ==========================================================================
