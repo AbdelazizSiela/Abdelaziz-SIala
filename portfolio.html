@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="colors.css?v=35">
-  <link rel="stylesheet" href="portfolio.css?v=7">
+  <link rel="stylesheet" href="portfolio.css?v=18">
 </head>
 
 <body id="top">
@@ -151,6 +151,9 @@
           <div class="category-head">
             <h2>Freelance Projects</h2>
             <p class="category-note">Built for clients — reviews verified on Upwork, Freelancer &amp; Fiverr</p>
+          </div>
+          <div class="marquee marquee-spotlight" id="review-marquee">
+            <div class="marquee-track" id="review-marquee-track"></div>
           </div>
           <div class="project-grid">
             <a class="pcard" href="portfolio/poppies/" data-slug="poppies">
@@ -423,6 +426,8 @@
     </div>
   </footer>
 
+  <script src="main.js?v=35"></script>
+
   <script>
     /* Branded placeholder fallback: if a project screenshot hasn't been
        dropped in yet, swap in an inline SVG that fits the site's style.
@@ -451,6 +456,28 @@
         });
       });
     })();
+
+    /* Freelance client-review spotlight marquee — INITIALIZED WITH THE SAME
+       initMarquee() from main.js that powers the mentorship bars, so the
+       cover-flow center scaling, drag & the "Click to verify" tooltip work
+       EXACTLY like the mentorship page. */
+    initMarquee({
+      marqueeId: 'review-marquee',
+      trackId: 'review-marquee-track',
+      spotlight: true,
+      showText: false,
+      tooltip: 'Click to verify',
+      items: [
+        { img: 'images/proof/poppies/review.png', link: 'http://www.fiverr.com/abdelazizsiela' },
+        { img: 'images/proof/secure-networking/review.png', link: 'https://www.freelancer.com/u/AbdelazizSiela?review_context_id=39591423&review_type=project&frm=AbdelazizSiela&sb=t' },
+        { img: 'images/proof/parrot-flip/review.png', link: 'https://www.upwork.com/freelancers/~012da270323100a2e9?mp_source=share' },
+        { img: 'images/proof/attack-on-monsters/review.png', link: 'http://www.fiverr.com/abdelazizsiela' },
+        { img: 'images/proof/gekoly-runner/review.png', link: 'http://www.fiverr.com/abdelazizsiela' },
+        { img: 'images/proof/planes-attack/review.png', link: 'http://www.fiverr.com/abdelazizsiela' },
+        { img: 'images/proof/steps/review.png', link: 'http://www.fiverr.com/abdelazizsiela' },
+        { img: 'images/proof/end-of-civilization/review.png', link: 'http://www.fiverr.com/abdelazizsiela' }
+      ]
+    });
   </script>
 
 </body>

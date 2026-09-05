@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../colors.css?v=35">
-  <link rel="stylesheet" href="../../portfolio.css?v=7">
+  <link rel="stylesheet" href="../../portfolio.css?v=18">
 </head>
 
 <body id="top">
@@ -45,8 +45,17 @@
         <span class="pd-category">Freelance Projects</span>
         <h1>Secure Networking Journey</h1>
         <div class="pd-desc">
-          <p>Secure Networking Journey is a web-based interactive game to engage B2B prospects and capture leads through a fun, role-tailored experience. Play through a guided secure networking journey, tackle three interactive challenges, earn points, and unlock insights--learning and qualifying without feeling like a sales pitch.</p>
+          <p>Secure Networking Journey is a <strong>web-based interactive game</strong> to engage <strong>B2B prospects</strong> and capture leads through a fun, role-tailored experience. Play through a guided secure networking journey, <strong>tackle three interactive challenges</strong>, earn points, and unlock insights--learning and qualifying without feeling like a sales pitch.</p>
         </div>
+      </div>
+    </section>
+
+    <section class="pd-review" aria-label="Client review">
+      <div class="wrap">
+        <h2>Client Review</h2>
+        <a class="pd-review-link" href="https://www.freelancer.com/u/AbdelazizSiela?review_context_id=39591423&review_type=project&frm=AbdelazizSiela&sb=t" target="_blank" rel="noopener" aria-label="Open the original client review for Secure Networking Journey">
+          <img class="pd-review-media" src="../../images/proof/secure-networking/review.png" alt="Client review for Secure Networking Journey" loading="lazy">
+        </a>
       </div>
     </section>
 
@@ -182,7 +191,30 @@
       });
     });
   })();
-  </script>
+
+  (function () {
+    var tip = document.createElement('div');
+    tip.className = 'pd-tooltip';
+    tip.textContent = 'Click to verify';
+    document.body.appendChild(tip);
+    function move(x, y) {
+      var px = x + 14, py = y + 18;
+      var r = tip.getBoundingClientRect();
+      if (px + r.width > window.innerWidth - 8) px = x - r.width - 14;
+      if (py + r.height > window.innerHeight - 8) py = y - r.height - 18;
+      tip.style.left = px + 'px';
+      tip.style.top = py + 'px';
+    }
+    function show() { tip.classList.add('is-visible'); }
+    function hide() { tip.classList.remove('is-visible'); }
+    window.addEventListener('pointermove', function (e) {
+      move(e.clientX, e.clientY);
+      var hit = e.pointerType === 'mouse' && e.target.closest && e.target.closest('.pd-review-media');
+      if (hit) show(); else hide();
+    });
+    document.addEventListener('pointerleave', hide);
+    window.addEventListener('blur', hide);
+  })();  </script>
 
 </body>
 </html>

@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../colors.css?v=35">
-  <link rel="stylesheet" href="../../portfolio.css?v=7">
+  <link rel="stylesheet" href="../../portfolio.css?v=18">
 </head>
 
 <body id="top">
@@ -45,8 +45,17 @@
         <span class="pd-category">Freelance Projects</span>
         <h1>Planes Attack</h1>
         <div class="pd-desc">
-          <p>An endless game where you shoot warplanes with rockets.</p>
+          <p>An <strong>endless</strong> game where you <strong>shoot warplanes</strong> with rockets.</p>
         </div>
+      </div>
+    </section>
+
+    <section class="pd-review" aria-label="Client review">
+      <div class="wrap">
+        <h2>Client Review</h2>
+        <a class="pd-review-link" href="http://www.fiverr.com/abdelazizsiela" target="_blank" rel="noopener" aria-label="Open the original client review for Planes Attack">
+          <img class="pd-review-media" src="../../images/proof/planes-attack/review.png" alt="Client review for Planes Attack" loading="lazy">
+        </a>
       </div>
     </section>
 
@@ -180,7 +189,30 @@
       });
     });
   })();
-  </script>
+
+  (function () {
+    var tip = document.createElement('div');
+    tip.className = 'pd-tooltip';
+    tip.textContent = 'Click to verify';
+    document.body.appendChild(tip);
+    function move(x, y) {
+      var px = x + 14, py = y + 18;
+      var r = tip.getBoundingClientRect();
+      if (px + r.width > window.innerWidth - 8) px = x - r.width - 14;
+      if (py + r.height > window.innerHeight - 8) py = y - r.height - 18;
+      tip.style.left = px + 'px';
+      tip.style.top = py + 'px';
+    }
+    function show() { tip.classList.add('is-visible'); }
+    function hide() { tip.classList.remove('is-visible'); }
+    window.addEventListener('pointermove', function (e) {
+      move(e.clientX, e.clientY);
+      var hit = e.pointerType === 'mouse' && e.target.closest && e.target.closest('.pd-review-media');
+      if (hit) show(); else hide();
+    });
+    document.addEventListener('pointerleave', hide);
+    window.addEventListener('blur', hide);
+  })();  </script>
 
 </body>
 </html>
