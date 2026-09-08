@@ -383,6 +383,23 @@ p { margin: 0; }
   flex: 1;
 }
 .pcard-title { font-size: 1.1rem; font-weight: 600; }
+.pcard-tag {
+  position: absolute;
+  top: .5rem;
+  left: .5rem;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  color: var(--color-text);
+  background: rgba(5, 5, 5, .6);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: .2rem .55rem;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
 .pcard-desc {
   font-size: .9rem;
   color: var(--color-muted);
@@ -591,6 +608,20 @@ p { margin: 0; }
   border-radius: 999px;
 }
 
+.pd-jam-tag {
+  display: inline-flex;
+  margin-left: .6rem;
+  vertical-align: baseline;
+  font-family: var(--font-display);
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  padding: .35rem .8rem;
+  border-radius: 999px;
+}
+
 .pd-hero h1 {
   margin: 1.1rem 0 0;
   font-size: clamp(2.1rem, 5vw, 3.4rem);
@@ -614,8 +645,10 @@ p { margin: 0; }
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1.6rem;
+  margin-top: 1.6rem;
   color: var(--color-accent-hover);
 }
+.pd-gallery h2:first-child { margin-top: 0; }
 
 /* Hero / first screenshot framed like the showcase marquee */
 .pd-shot-hero {
