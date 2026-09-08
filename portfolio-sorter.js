@@ -27,6 +27,7 @@
      chip, prettified automatically (hyphens -> spaces, first letter caps). */
   var LABELS = {
     '2d': '2D',
+    '3d': '3D',
     'endless-runner': 'Endless Runner',
     'turn-based': 'Turn-Based',
     'co-op': 'Co-op',
@@ -34,13 +35,13 @@
     'fps': 'FPS',
     'adventure': 'Adventure',
     'arcade': 'Arcade',
-    'casual': 'Casual',
     'combat': 'Combat',
     'hypercasual': 'Hypercasual',
     'mobile': 'Mobile',
     'multiplayer': 'Multiplayer',
     'narrative': 'Narrative',
     'party': 'Party',
+    'pc': 'PC',
     'platformer': 'Platformer',
     'puzzle': 'Puzzle',
     'roguelike': 'Roguelike',
@@ -48,16 +49,29 @@
     'shooter': 'Shooter',
     'simulation': 'Simulation',
     'strategy': 'Strategy',
-    'web': 'Web'
+    'telegram': 'Telegram',
+    'web': 'Web',
+    'console': 'Console',
+    'vr': 'VR'
   };
 
-  /* Display order for the chips / genre groups — most defining genres first. */
-  var PRIORITY = [
-    'endless-runner', 'platformer', 'shooter', 'fps', 'combat', 'arcade', 'puzzle',
-    'strategy', 'turn-based', 'co-op', 'multiplayer', 'party', 'roguelike', 'roguelite',
-    'simulation', 'narrative', 'adventure', '2d', 'top-down', 'mobile',
-    'hypercasual', 'casual', 'web'
+  /* Tokens are grouped by kind — genres vs. platforms (Mobile, Web, PC,
+     Telegram...) vs. style (2D / 3D / top-down). Display order comes from
+     each kind's priority list; unknown tokens default to the Genre group. */
+  var KINDS = [
+    { key: 'genre', label: 'Genres', priority: [
+        'endless-runner', 'platformer', 'shooter', 'fps', 'combat', 'arcade', 'puzzle',
+        'strategy', 'turn-based', 'co-op', 'multiplayer', 'party', 'roguelike', 'roguelite',
+        'simulation', 'narrative', 'adventure', 'hypercasual' ] },
+    { key: 'platform', label: 'Platforms', priority: ['pc', 'mobile', 'web', 'telegram', 'console', 'vr'] },
+    { key: 'style', label: 'Style', priority: ['2d', '3d', 'top-down'] }
   ];
+
+  var KIND_OF = {
+    '2d': 'style', '3d': 'style', 'top-down': 'style',
+    'pc': 'platform', 'mobile': 'platform', 'web': 'platform',
+    'telegram': 'platform', 'console': 'platform', 'vr': 'platform'
+  };
 
   var genreList = [];
 
@@ -72,29 +86,34 @@
     }).join(' ');
   }
 
-  /* Collect every genre token used on the cards, ordered by PRIORITY. */
+  /* Collect every token used on the cards, ordered by kind priority. */
   (function buildGenreList() {
     var used = {};
     cards.forEach(function (card) {
       genresOf(card).forEach(function (g) { used[g] = true; });
     });
-    PRIORITY.forEach(function (g) {
-      if (used[g]) genreList.push({ key: g, label: LABELS[g] || prettify(g) });
-    });
-    Object.keys(used).filter(function (g) {
-      return PRIORITY.indexOf(g) === -1;
-    }).sort().forEach(function (g) {
-      genreList.push({ key: g, label: LABELS[g] || prettify(g) });
+    KINDS.forEach(function (kind) {
+      kind.priority.forEach(function (g) {
+        if (used[g]) genreList.push({ key: g, label: LABELS[g] || prettify(g), kind: kind.key });
+      });
+      Object.keys(used).filter(function (g) {
+        return (KIND_OF[g] || 'genre') === kind.key;
+      }).filter(function (g) {
+        return kind.priority.indexOf(g) === -1;
+      }).sort().forEach(function (g) {
+        genreList.push({ key: g, label: LABELS[g] || prettify(g), kind: kind.key });
+      });
     });
   })();
 
   /* ---- State -------------------------------------------------------------- */
-  var currentGenre = '';
+  var selectedGenres = [];
   var groupBy = 'collections';
 
   function matches(card) {
-    if (!currentGenre) return true;
-    return genresOf(card).indexOf(currentGenre) !== -1;
+    if (!selectedGenres.length) return true;
+    var tags = genresOf(card);
+    return selectedGenres.some(function (g) { return tags.indexOf(g) !== -1; });
   }
 
   /* ---- Filter chips ------------------------------------------------------- */
@@ -108,16 +127,54 @@
     b.setAttribute('aria-pressed', active ? 'true' : 'false');
     b.textContent = label;
     b.addEventListener('click', function () {
-      setGenre(b.getAttribute('data-genre') === currentGenre ? '' : b.getAttribute('data-genre'));
+      toggleGenre(b.getAttribute('data-genre'));
     });
     chipButtons.push(b);
     return b;
   }
 
+  /* One chip group per kind: label + chips. "All" resets the whole filter
+     and sits at the start of the first group. */
+  var chipGroups = {};
+  KINDS.forEach(function (kind) {
+    var group = document.createElement('div');
+    group.className = 'genre-kind';
+    var label = document.createElement('span');
+    label.className = 'genre-kind-label';
+    label.textContent = kind.label;
+    var row = document.createElement('div');
+    row.className = 'genre-chips';
+    group.appendChild(label);
+    group.appendChild(row);
+    chipsWrap.appendChild(group);
+    chipGroups[kind.key] = row;
+  });
+
   makeChip('', 'All', true);
-  chipsWrap.appendChild(chipButtons[0]);
+  chipGroups[KINDS[0].key].appendChild(chipButtons[0]);
   genreList.forEach(function (g) {
-    chipsWrap.appendChild(makeChip(g.key, g.label, false));
+    chipGroups[g.kind].appendChild(makeChip(g.key, g.label, false));
+  });
+
+  /* ---- Card tags ----------------------------------------------------------
+     Show each project's own filters (genres / platforms / style) as small
+     chips on its card, using the same labels as the filter chips above. */
+  cards.forEach(function (card) {
+    var tags = genresOf(card);
+    if (!tags.length) return;
+    var body = card.querySelector('.pcard-body');
+    if (!body) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'pcard-tags';
+    tags.forEach(function (t) {
+      var s = document.createElement('span');
+      s.className = 'pcard-filter-tag';
+      s.textContent = LABELS[t] || prettify(t);
+      wrap.appendChild(s);
+    });
+    var linkTag = card.querySelector('.pcard-link-tag');
+    if (linkTag) body.insertBefore(wrap, linkTag);
+    else body.appendChild(wrap);
   });
 
   /* ---- Group-by toggle ---------------------------------------------------- */
@@ -152,7 +209,7 @@
     var freelance = document.getElementById('freelance');
     if (freelance) {
       var marquee = freelance.querySelector('.marquee');
-      if (marquee) marquee.classList.toggle('is-filtered-out', currentGenre !== '');
+      if (marquee) marquee.classList.toggle('is-filtered-out', selectedGenres.length > 0);
     }
 
     showStatus(shown);
@@ -166,33 +223,27 @@
     noResults.classList.remove('is-visible');
 
     var activeGenres = genreList.filter(function (g) {
-      return !currentGenre || g.key === currentGenre;
+      return !selectedGenres.length || selectedGenres.indexOf(g.key) !== -1;
     });
 
-    var shown = 0;
-    activeGenres.forEach(function (g) {
-      var groupCards = cards.filter(function (c) {
-        return genresOf(c).indexOf(g.key) !== -1;
-      });
-      if (!groupCards.length) return;
-      shown += groupCards.length;
-
+    function addGroup(title, cards) {
+      if (!cards.length) return 0;
       var section = document.createElement('section');
       section.className = 'category genre-group';
 
       var head = document.createElement('div');
       head.className = 'category-head';
       var h = document.createElement('h2');
-      h.textContent = g.label;
+      h.textContent = title;
       var note = document.createElement('p');
       note.className = 'category-note';
-      note.textContent = groupCards.length + (groupCards.length === 1 ? ' project' : ' projects');
+      note.textContent = cards.length + (cards.length === 1 ? ' project' : ' projects');
       head.appendChild(h);
       head.appendChild(note);
 
       var grid = document.createElement('div');
       grid.className = 'project-grid';
-      groupCards.forEach(function (c) {
+      cards.forEach(function (c) {
         var clone = c.cloneNode(true);
         /* Originals may carry `is-filtered-out` from a previous Collections
            filter — don't let clones inherit it or the group renders hidden. */
@@ -203,6 +254,15 @@
       section.appendChild(head);
       section.appendChild(grid);
       genreView.appendChild(section);
+      return cards.length;
+    }
+
+    var shown = 0;
+    activeGenres.forEach(function (g) {
+      var groupCards = cards.filter(function (c) {
+        return genresOf(c).indexOf(g.key) !== -1;
+      });
+      shown += addGroup(g.label, groupCards);
     });
 
     genreView.classList.add('is-active');
@@ -212,7 +272,7 @@
   function showStatus(shown) {
     var total = cards.length;
     if (statusEl) {
-      statusEl.textContent = currentGenre
+      statusEl.textContent = selectedGenres.length
         ? shown + ' of ' + total + ' project' + (total === 1 ? '' : 's')
         : total + ' project' + (total === 1 ? '' : 's');
     }
@@ -220,18 +280,32 @@
   }
 
   function render() {
+    paintChips();
     if (groupBy === 'genre') renderGenre();
     else renderCollections();
   }
 
-  function setGenre(key) {
-    currentGenre = key;
+  function toggleGenre(key) {
+    if (key === '') {
+      selectedGenres = [];
+    } else {
+      var i = selectedGenres.indexOf(key);
+      if (i === -1) selectedGenres.push(key);
+      else selectedGenres.splice(i, 1);
+    }
+    render();
+  }
+
+  /* Keep the chip buttons' active state in sync with the selection:
+     "All" is active only when nothing is selected; every selected genre
+     chip is highlighted (multi-select). */
+  function paintChips() {
     chipButtons.forEach(function (b) {
-      var active = b.getAttribute('data-genre') === key;
+      var g = b.getAttribute('data-genre');
+      var active = g === '' ? !selectedGenres.length : selectedGenres.indexOf(g) !== -1;
       b.classList.toggle('is-active', active);
       b.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
-    render();
   }
 
   function setGroupBy(mode) {

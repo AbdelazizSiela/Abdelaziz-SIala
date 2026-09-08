@@ -383,6 +383,22 @@ p { margin: 0; }
   flex: 1;
 }
 .pcard-title { font-size: 1.1rem; font-weight: 600; }
+.pcard-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin-top: .35rem;
+}
+.pcard-filter-tag {
+  font-family: var(--font-display);
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--color-accent-hover);
+  border: 1px solid var(--border-strong);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  padding: .14rem .5rem;
+  border-radius: 999px;
+}
 .pcard-tag {
   position: absolute;
   top: .5rem;
@@ -451,6 +467,25 @@ p { margin: 0; }
   display: flex;
   flex-wrap: wrap;
   gap: .5rem;
+}
+
+.genre-chip-groups {
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+}
+.genre-kind {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+.genre-kind-label {
+  font-family: var(--font-display);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
 }
 
 .genre-chip {
